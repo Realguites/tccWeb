@@ -1,0 +1,16 @@
+@import url('https://fonts.googleapis.com/css2?family=Oswald&display=swap');
+
+.Card {
+    font-family: 'Oswald';
+    width: 100vw;
+    height: 40vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.Card h2{
+    font-weight:unset;
+    font-size:30px;
+}
