@@ -1,7 +1,6 @@
 import './login.css'
 import Input from '../input/Input'
 import { useState } from 'react';
-import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import axios from 'axios';
 import 'react-notifications/lib/notifications.css';
 import { NotificationManager } from 'react-notifications';
@@ -21,8 +20,9 @@ export default props => {
       }).then((response) => {
         if(response.status === 200){
           localStorage.setItem("sipToken", response.data.token);
+          localStorage.setItem("sipUser", response.data.user.name);
           alert(response.data.user.name + ", Bem-vindo!")
-          
+          window.location.href = "/dashboard";
         }
       }).catch((e) => {
         alert(e.response.data.erro)
@@ -38,8 +38,9 @@ export default props => {
       backgroundSize: "cover",
     }}>
       <img
-        src={require("/home/guilherme/Documents/SENAC/tcc/sip_web/src/components/login/cgm_logo.png")}
+        src={require("../images/cgm_logo.png")}
         style={{
+          paddingTop: "20px",
           maxWidth: "400px",
           width: "100%",
           height: "auto"
@@ -62,7 +63,7 @@ export default props => {
         >
         </Input>
 
-        <button onClick={(e) => login()}>Acessar</button>
+        <button onClick={() => login()}>Acessar</button>
 
       </div>
 
