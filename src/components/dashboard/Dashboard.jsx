@@ -5,15 +5,20 @@ import Table from '../table/Table';
 import { useState } from 'react';
 import './Dashboard.css'
 import axios from 'axios';
+import React from 'react';
 
 
-export default function Dashboard() {
+export default class Dashboard extends React.Component {
 
-  
-  
-  setConfiguration({ maxScreenClass: 'xl' });
-  let usuarioNome = '';
+  state = {
+    smartphones:[]
+    //usuarioNome: localStorage.getItem("sipUser").substring(0, localStorage.getItem("sipUser").indexOf(" ") + 1)
+  }
+
+  //setConfiguration({ maxScreenClass: 'xl' });
+  /*var usuarioNome = '';
   let array = [];
+  const [array2, setArray2] = useState([])
   if (localStorage.getItem("sipToken") !== null) {
     usuarioNome = localStorage.getItem("sipUser").substring(0, localStorage.getItem("sipUser").indexOf(" ") + 1)
   } else {
@@ -26,58 +31,70 @@ export default function Dashboard() {
         "Authorization": `bearer ${localStorage.getItem("sipToken")}`
       }
     }).then((response) => {
-      array = response.data
+      //setArray2({ smartphones: response.data })
     }).catch((e) => {
       alert(e)
     })
+  }*/
+
+  componentDidMount() {
+    axios.get('http://localhost:3001/smartphone', {
+      headers: {
+        "Authorization": `bearer ${localStorage.getItem("sipToken")}`
+      }
+    }).then(res => {
+      const smartphones = res.data;
+      this.setState({ smartphones });
+    })
   }
 
-  console.log('dsdsd',array)
-  
-  return (
-    <Container>
-      <Row>
-        <Col sm={4}>
-          <img
-            src={require("../images/cgm_logo.png")}
-            style={{
-              paddingTop: "20px",
-              maxWidth: "400px",
-              width: "100%",
-              height: "auto"
-            }}
-          >
-          </img>
-        </Col>
-        <Col sm={4}>
+  render() {
+    console.log('eeeee',this.state.smartphones)
+    return (
+      <Container>
+        <Row>
+          <Col sm={4}>
+            <img
+              src={require("../images/cgm_logo.png")}
+              style={{
+                paddingTop: "20px",
+                maxWidth: "400px",
+                width: "100%",
+                height: "auto"
+              }}
+            >
+            </img>
+          </Col>
+          <Col sm={4}>
 
-        </Col>
-        <Col sm={4}>
-          <div className="cardDashboard">
-            <h2>Bem-vindo(a) <strong>{usuarioNome}</strong></h2>
-            <div className="button-group">
-              <Button
-                label={"Sair"}>
-              </Button>
-              <Button
-                label={"Usuários"}>
-              </Button>
-              <Button
-                label={"Gráficos"}>
-              </Button>
+          </Col>
+          <Col sm={4}>
+            <div className="cardDashboard">
+              <h2>Bem-vindo(a) <strong>{localStorage.getItem("sipUser").substring(0, localStorage.getItem("sipUser").indexOf(" ") + 1)}</strong></h2>
+              <div className="button-group">
+                <Button
+                  label={"Sair"}>
+                </Button>
+                <Button
+                  label={"Usuários"}>
+                </Button>
+                <Button
+                  label={"Gráficos"}>
+                </Button>
+              </div>
             </div>
-          </div>
-        </Col>
-      </Row>
+          </Col>
+        </Row>
 
-      <Row>
-        <Col sm={12}>
-          <Table
-            headers={['ID Dispositivo', 'CNPJ', 'Nome do usuário']}
-            data={getSmartphones()}
-          ></Table>
-        </Col>
-      </Row>
-    </Container>
-  );
+        <Row>
+          <Col sm={12}>
+            <Table
+              headers={['ID Dispositivo', 'CNPJ', 'Nome do usuário']}
+              data={this.state.smartphones}
+            ></Table>
+          </Col>
+        </Row>
+      </Container>
+    );
+  }
 }

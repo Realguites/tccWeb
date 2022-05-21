@@ -13,9 +13,11 @@ export default props => {
                 </tr>
 
                 
-                <tr>
-                    <td></td>      
-                </tr>
+                {props.data.map((line) => {
+                    //return line.map((h) => '<td>' + h + '</td>')
+                    console.log( line)
+                })}  
+                
             </table>
         </div>
     )
