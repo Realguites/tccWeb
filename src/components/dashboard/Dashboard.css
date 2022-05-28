@@ -18,3 +18,10 @@
 .button-group Button{
     padding:10px;
 }
+
+.table{
+    position: absolute;
+    left:0px;
+    width:100%;
+    overflow: scroll;
+}

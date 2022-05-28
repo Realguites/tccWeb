@@ -11,7 +11,7 @@ import React from 'react';
 export default class Dashboard extends React.Component {
 
   state = {
-    smartphones:[]
+    smartphones: []
     //usuarioNome: localStorage.getItem("sipUser").substring(0, localStorage.getItem("sipUser").indexOf(" ") + 1)
   }
 
@@ -49,7 +49,6 @@ export default class Dashboard extends React.Component {
   }
 
   render() {
-    console.log('eeeee',this.state.smartphones)
     return (
       <Container>
         <Row>
@@ -88,10 +87,27 @@ export default class Dashboard extends React.Component {
 
         <Row>
           <Col sm={12}>
-            <Table
-              headers={['ID Dispositivo', 'CNPJ', 'Nome do usuário']}
-              data={this.state.smartphones}
-            ></Table>
+            <div className="table">
+              <Table
+                keys={[
+                  'idDisp',
+                  'cnpj',
+                  'usuario',
+                  'status',
+                  'codLoj',
+                  'nomLoj',
+                  'versao',
+                  'autCgm',
+                  'nLocal',
+                  'nAndroid',
+                  'dLocal',
+                  'dAndroid',
+                  'versaoEstavel',
+                  'linkAtualizacao'
+                ]}
+                data={this.state.smartphones}
+              ></Table>
+            </div>
           </Col>
         </Row>
       </Container>
