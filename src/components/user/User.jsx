@@ -1,0 +1,194 @@
+import { setConfiguration } from 'react-grid-system';
+import { Container, Row, Col } from 'react-grid-system';
+import Button from '../button/Button'
+import Table from '../table/Table';
+import { useState } from 'react';
+import './User.css'
+import Input from '../input/Input'
+import axios from 'axios';
+import React from 'react';
+
+
+export default class Dashboard extends React.Component {
+
+  state = {
+    smartphones: []
+    //usuarioNome: localStorage.getItem("sipUser").substring(0, localStorage.getItem("sipUser").indexOf(" ") + 1)
+  }
+
+  //setConfiguration({ maxScreenClass: 'xl' });
+  /*var usuarioNome = '';
+  let array = [];
+  const [array2, setArray2] = useState([])
+  if (localStorage.getItem("sipToken") !== null) {
+    usuarioNome = localStorage.getItem("sipUser").substring(0, localStorage.getItem("sipUser").indexOf(" ") + 1)
+  } else {
+    window.location.href = "/"
+  }
+
+   const getSmartphones = async () =>  {
+   await axios.get('http://localhost:3001/smartphone', {
+      headers: {
+        "Authorization": `bearer ${localStorage.getItem("sipToken")}`
+      }
+    }).then((response) => {
+      //setArray2({ smartphones: response.data })
+    }).catch((e) => {
+      alert(e)
+    })
+  }*/
+
+  componentDidMount() {
+    axios.get('http://localhost:3001/smartphone', {
+      headers: {
+        "Authorization": `bearer ${localStorage.getItem("sipToken")}`
+      }
+    }).then(res => {
+      const smartphones = res.data;
+      this.setState({ smartphones });
+    })
+  }
+
+  render() {
+    return (
+      <Container>
+        <Row>
+          <Col sm={4}>
+            <img
+              src={require("../images/cgm_logo.png")}
+              style={{
+                paddingTop: "20px",
+                maxWidth: "400px",
+                width: "100%",
+                height: "auto"
+              }}
+            >
+            </img>
+          </Col>
+          <Col sm={4}>
+
+          </Col>
+
+          <Col sm={4}>
+            <div className="cardDashboard">
+              <h2>Bem-vindo(a) <strong>{localStorage.getItem("sipUser").substring(0, localStorage.getItem("sipUser").indexOf(" ") + 1)}</strong></h2>
+              <div className="button-group">
+                <Button
+                  label={"Sair"}>
+                </Button>
+                <Button
+                  label={"Usuários"}>
+                </Button>
+                <Button
+                  label={"Gráficos"}>
+                </Button>
+              </div>
+            </div>
+          </Col>
+        </Row>
+        <Row>
+          <div className="buttonOpcoes">
+            <Button
+              label={"Novo"}>
+            </Button>
+            <Button
+              label={"Gravar"}>
+            </Button>
+            <Button
+              label={"Cancelar"}>
+            </Button>
+          </div>
+        </Row>
+        <Row>
+          <Col sm={7}>
+            <Input
+              id={"userNome"}
+              name={"userNome"}
+              type={"text"}
+              placeholder={"Nome"}
+              whenChange={null}
+            >
+            </Input>
+          </Col>
+          <Col sm={5}>
+            <Input
+              id={"userEmail"}
+              name={"userEmail"}
+              type={"email"}
+              placeholder={"Email"}
+              whenChange={null}
+            >
+            </Input>
+          </Col>
+        </Row>
+        <Row>
+          <Col sm={3}>
+            <Input
+              id={"userPassword"}
+              name={"userPassword"}
+              type={"password"}
+              placeholder={"Senha"}
+              whenChange={null}
+            >
+            </Input>
+          </Col>
+          <Col sm={3}>
+            <Input
+              id={"userRepeatPassword"}
+              name={"userRepeatPassword"}
+              type={"password"}
+              placeholder={"Repetir senha"}
+              whenChange={null}
+            >
+            </Input>
+          </Col>
+          <Col sm={3}>
+            <Input
+              id={"userNivel"}
+              name={"userNivel"}
+              type={"text"}
+              placeholder={"Nível"}
+              whenChange={null}
+            >
+            </Input>
+          </Col>
+          <Col sm={3}>
+            <Input
+              id={"userStatus"}
+              name={"userStatus"}
+              type={"text"}
+              placeholder={"Status"}
+              whenChange={null}
+            >
+            </Input>
+          </Col>
+        </Row>
+        <Row>
+          <Col sm={12}>
+            <div className="table">
+              <Table
+                keys={[
+                  'idDisp',
+                  'cnpj',
+                  'usuario',
+                  'status',
+                  'codLoj',
+                  'nomLoj',
+                  'versao',
+                  'autCgm',
+                  'nLocal',
+                  'nAndroid',
+                  'dLocal',
+                  'dAndroid',
+                  'versaoEstavel',
+                  'linkAtualizacao'
+                ]}
+                data={this.state.smartphones}
+              ></Table>
+            </div>
+          </Col>
+        </Row>
+      </Container>
+    );
+  }
+}
