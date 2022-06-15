@@ -1,4 +1,5 @@
 import { setConfiguration } from 'react-grid-system';
+import { useForm } from "react-hook-form";
 import { Container, Row, Col } from 'react-grid-system';
 import Button from '../button/Button'
 import Table from '../table/Table';
@@ -9,90 +10,107 @@ import axios from 'axios';
 import React from 'react';
 
 
-export default class Dashboard extends React.Component {
 
-  state = {
-    smartphones: []
-    //usuarioNome: localStorage.getItem("sipUser").substring(0, localStorage.getItem("sipUser").indexOf(" ") + 1)
+export default function User() {
+
+  const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [repeatPassword, setRepeatPassword] = useState('')
+  const [level, setLevel] = useState('D')
+  const [status, setStatus] = useState('')
+  const [users, setUsers] = useState([])
+
+  async function setUser(){
+    if(password?.target?.value === repeatPassword?.target?.value){
+      sendUser()
+    }else{
+      alert('Senha e repetir senha são diferentes!')
+    }  
+
+    
+    //console.log('DATA ', nome, email, repeatPassword, password)
   }
 
-  //setConfiguration({ maxScreenClass: 'xl' });
-  /*var usuarioNome = '';
-  let array = [];
-  const [array2, setArray2] = useState([])
-  if (localStorage.getItem("sipToken") !== null) {
-    usuarioNome = localStorage.getItem("sipUser").substring(0, localStorage.getItem("sipUser").indexOf(" ") + 1)
-  } else {
-    window.location.href = "/"
+  const axiosConfig = {
+    headers: {
+      'Authorization': `bearer ${localStorage.getItem("sipToken")}`
+    }
+  };
+
+  const data = {
+    name: name?.target?.value.trim(),
+    email: email?.target?.value.trim(),
+    password: password?.target?.value.trim(),
+    level: level?.target?.value.trim(),
+    status: status?.target?.value.trim()
+   }
+
+  function sendUser(){
+    axios.post('http://localhost:3001/user', data, axiosConfig).then((response) => {
+        if(response.status === 201){
+          alert("Usuário cadastrado com sucesso!")
+        }
+      }).catch((e) => {
+        alert(e?.message)
+      })
   }
 
-   const getSmartphones = async () =>  {
-   await axios.get('http://localhost:3001/smartphone', {
-      headers: {
-        "Authorization": `bearer ${localStorage.getItem("sipToken")}`
-      }
-    }).then((response) => {
-      //setArray2({ smartphones: response.data })
-    }).catch((e) => {
-      alert(e)
-    })
-  }*/
-
-  componentDidMount() {
-    axios.get('http://localhost:3001/smartphone', {
+  function getusers(){
+    axios.get('http://localhost:3001/user', {
       headers: {
         "Authorization": `bearer ${localStorage.getItem("sipToken")}`
       }
     }).then(res => {
-      const smartphones = res.data;
-      this.setState({ smartphones });
+      this.setUsers(res.data);
     })
   }
 
-  render() {
-    return (
-      <Container>
-        <Row>
-          <Col sm={4}>
-            <img
-              src={require("../images/cgm_logo.png")}
-              style={{
-                paddingTop: "20px",
-                maxWidth: "400px",
-                width: "100%",
-                height: "auto"
-              }}
-            >
-            </img>
-          </Col>
-          <Col sm={4}>
+  return (
 
-          </Col>
+    <Container>
+      <Row>
+        <Col sm={4}>
+          <img
+            src={require("../images/cgm_logo.png")}
+            style={{
+              paddingTop: "20px",
+              maxWidth: "400px",
+              width: "100%",
+              height: "auto"
+            }}
+          >
+          </img>
+        </Col>
+        <Col sm={4}>
 
-          <Col sm={4}>
-            <div className="cardDashboard">
-              <h2>Bem-vindo(a) <strong>{localStorage.getItem("sipUser").substring(0, localStorage.getItem("sipUser").indexOf(" ") + 1)}</strong></h2>
-              <div className="button-group">
-                <Button
-                  label={"Sair"}>
-                </Button>
-                <Button
-                  label={"Usuários"}>
-                </Button>
-                <Button
-                  label={"Gráficos"}>
-                </Button>
-              </div>
+        </Col>
+
+        <Col sm={4}>
+          <div className="cardDashboard">
+            <h2>Bem-vindo(a) <strong>{localStorage.getItem("sipUser").substring(0, localStorage.getItem("sipUser").indexOf(" ") + 1)}</strong></h2>
+            <div className="button-group">
+              <Button
+                label={"Sair"}>
+              </Button>
+              <Button
+                label={"Usuários"}>
+              </Button>
+              <Button
+                label={"Gráficos"}>
+              </Button>
             </div>
-          </Col>
-        </Row>
+          </div>
+        </Col>
+      </Row>
         <Row>
           <div className="buttonOpcoes">
             <Button
               label={"Novo"}>
             </Button>
             <Button
-              label={"Gravar"}>
+              label={"Gravar"}
+              onClick={setUser}>
             </Button>
             <Button
               label={"Cancelar"}>
@@ -102,21 +120,21 @@ export default class Dashboard extends React.Component {
         <Row>
           <Col sm={7}>
             <Input
-              id={"userNome"}
-              name={"userNome"}
+              id={"name"}
+              name={"name"}
               type={"text"}
               placeholder={"Nome"}
-              whenChange={null}
+              whenChange={setName}
             >
             </Input>
           </Col>
           <Col sm={5}>
             <Input
-              id={"userEmail"}
-              name={"userEmail"}
+              id={"email"}
+              name={"email"}
               type={"email"}
               placeholder={"Email"}
-              whenChange={null}
+              whenChange={setEmail}
             >
             </Input>
           </Col>
@@ -124,41 +142,41 @@ export default class Dashboard extends React.Component {
         <Row>
           <Col sm={3}>
             <Input
-              id={"userPassword"}
-              name={"userPassword"}
+              id={"password"}
+              name={"password"}
               type={"password"}
               placeholder={"Senha"}
-              whenChange={null}
+              whenChange={setPassword}
             >
             </Input>
           </Col>
           <Col sm={3}>
             <Input
-              id={"userRepeatPassword"}
-              name={"userRepeatPassword"}
+              id={"repeatPassword"}
+              name={"repeatPassword"}
               type={"password"}
               placeholder={"Repetir senha"}
-              whenChange={null}
+              whenChange={setRepeatPassword}
             >
             </Input>
           </Col>
           <Col sm={3}>
             <Input
-              id={"userNivel"}
-              name={"userNivel"}
+              id={"level"}
+              name={"level"}
               type={"text"}
               placeholder={"Nível"}
-              whenChange={null}
+              whenChange={setLevel}
             >
             </Input>
           </Col>
           <Col sm={3}>
             <Input
-              id={"userStatus"}
-              name={"userStatus"}
+              id={"status"}
+              name={"status"}
               type={"text"}
               placeholder={"Status"}
-              whenChange={null}
+              whenChange={setStatus}
             >
             </Input>
           </Col>
@@ -166,29 +184,20 @@ export default class Dashboard extends React.Component {
         <Row>
           <Col sm={12}>
             <div className="table">
-              <Table
+            <Table
                 keys={[
-                  'idDisp',
-                  'cnpj',
-                  'usuario',
+                  'name',
+                  'email',
+                  'level',
                   'status',
-                  'codLoj',
-                  'nomLoj',
-                  'versao',
-                  'autCgm',
-                  'nLocal',
-                  'nAndroid',
-                  'dLocal',
-                  'dAndroid',
-                  'versaoEstavel',
-                  'linkAtualizacao'
+                  'registrationDate',
+                  'updateDate'
                 ]}
                 data={this.state.smartphones}
               ></Table>
             </div>
           </Col>
         </Row>
-      </Container>
-    );
-  }
+    </Container>
+  );
 }
