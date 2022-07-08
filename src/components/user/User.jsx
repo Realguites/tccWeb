@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { Container, Row, Col } from 'react-grid-system';
 import Button from '../button/Button'
 import Table from '../table/Table';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import './User.css'
 import Input from '../input/Input'
 import axios from 'axios';
@@ -15,21 +15,47 @@ export default function User() {
 
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
+  const [cnpj, setCnpj] = useState('')
   const [password, setPassword] = useState('')
   const [repeatPassword, setRepeatPassword] = useState('')
   const [level, setLevel] = useState('D')
   const [status, setStatus] = useState('')
   const [users, setUsers] = useState([])
+  const [userToEdit, setUserToEdit] = useState(null)
 
   async function setUser(){
     if(password?.target?.value === repeatPassword?.target?.value){
-      sendUser()
+      if(userToEdit == null)
+        sendUser()
+      else
+        updateUser(userToEdit?.id)
     }else{
       alert('Senha e repetir senha são diferentes!')
     }  
 
+  }
+  useEffect(() => {
+    getusers()
+  }, [])
+
+  function getDataFromTable(condition, id){
+    setUserToEdit(users?.data?.filter((e)=>{
+      return e?.id === id
+    })[0])
+    if(condition === 'update'){
+      setName(userToEdit?.name)
+      setEmail(userToEdit?.email)
+      setLevel(userToEdit?.level)
+      setStatus(userToEdit?.status)
+      setCnpj(userToEdit?.cnpj)
+    }else{
+      if(condition === 'delete'){
+        if(window.confirm('Tem certeza que deseja excluir o usuário ' + userToEdit?.name + '? Isso é irreversível!')){
+          deleteUser(id)
+        }
+      }
+    }
     
-    //console.log('DATA ', nome, email, repeatPassword, password)
   }
 
   const axiosConfig = {
@@ -39,30 +65,55 @@ export default function User() {
   };
 
   const data = {
-    name: name?.target?.value.trim(),
-    email: email?.target?.value.trim(),
-    password: password?.target?.value.trim(),
-    level: level?.target?.value.trim(),
-    status: status?.target?.value.trim()
+    name: name?.trim(),
+    email: email?.trim(),
+    password: password?.trim(),
+    level: level?.trim(),
+    status: status?.trim(),
+    cnpj: cnpj?.trim()
    }
 
   function sendUser(){
     axios.post('http://localhost:3001/user', data, axiosConfig).then((response) => {
         if(response.status === 201){
           alert("Usuário cadastrado com sucesso!")
+          setUserToEdit(null)
         }
       }).catch((e) => {
         alert(e?.message)
-      })
+      }).then(getusers())
+  }
+  
+
+  function updateUser(id){
+    axios.put('http://localhost:3001/user/' + id, data, axiosConfig).then((response) => {
+        if(response.status === 204){
+          alert("Usuário atualizado com sucesso!")
+          setUserToEdit(null)
+        }
+      }).catch((e) => {
+        alert(e?.message)
+      }).then(getusers())
+  }
+
+  function deleteUser(id){
+    axios.delete('http://localhost:3001/user/' + id, axiosConfig).then((response) => {
+        if(response.status === 204){
+          alert("Usuário excluído com sucesso!")
+          setUserToEdit(null)
+        }
+      }).catch((e) => {
+        alert(e?.message)
+      }).then(getusers())
   }
 
   function getusers(){
     axios.get('http://localhost:3001/user', {
       headers: {
-        "Authorization": `bearer ${localStorage.getItem("sipToken")}`
+        "Authorization": `bearer ${localStorage?.getItem("sipToken")}`
       }
     }).then(res => {
-      this.setUsers(res.data);
+      setUsers(res);
     })
   }
 
@@ -118,23 +169,36 @@ export default function User() {
           </div>
         </Row>
         <Row>
-          <Col sm={7}>
+          <Col sm={5}>
             <Input
               id={"name"}
               name={"name"}
               type={"text"}
               placeholder={"Nome"}
               whenChange={setName}
+              inputValue={name}
             >
             </Input>
           </Col>
-          <Col sm={5}>
+          <Col sm={4}>
             <Input
               id={"email"}
               name={"email"}
               type={"email"}
               placeholder={"Email"}
               whenChange={setEmail}
+              inputValue={email}
+            >
+            </Input>
+          </Col>
+          <Col sm={3}>
+            <Input
+              id={"cnpj"}
+              name={"cnpj"}
+              type={"text"}
+              placeholder={"cnpj"}
+              whenChange={setCnpj}
+              inputValue={cnpj}
             >
             </Input>
           </Col>
@@ -167,6 +231,7 @@ export default function User() {
               type={"text"}
               placeholder={"Nível"}
               whenChange={setLevel}
+              inputValue={level}
             >
             </Input>
           </Col>
@@ -177,6 +242,7 @@ export default function User() {
               type={"text"}
               placeholder={"Status"}
               whenChange={setStatus}
+              inputValue={status}
             >
             </Input>
           </Col>
@@ -186,14 +252,17 @@ export default function User() {
             <div className="table">
             <Table
                 keys={[
+                  'id',
                   'name',
                   'email',
                   'level',
                   'status',
+                  'cnpj',
                   'registrationDate',
                   'updateDate'
                 ]}
-                data={this.state.smartphones}
+                data={users?.data}
+                returnLineData={getDataFromTable}
               ></Table>
             </div>
           </Col>

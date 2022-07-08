@@ -15,8 +15,8 @@ export default props => {
   async function login() {
     axios
       .post('http://localhost:3001/login', {
-        email: usuario.target.value,
-        password: password.target.value
+        email: usuario,
+        password: password
       }).then((response) => {
         if(response.status === 200){
           localStorage.setItem("sipToken", response.data.token);

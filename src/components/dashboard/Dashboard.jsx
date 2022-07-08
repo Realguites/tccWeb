@@ -75,7 +75,10 @@ export default class Dashboard extends React.Component {
                   label={"Sair"}>
                 </Button>
                 <Button
-                  label={"Usuários"}>
+                  label={"Usuários"}
+                  onClick={function(_){
+                    window.location.href= '/users'
+                  }}>  
                 </Button>
                 <Button
                   label={"Gráficos"}>
