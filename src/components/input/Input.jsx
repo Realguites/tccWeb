@@ -1,18 +1,28 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import './input.css'
 
 export default props => {
-    const [valor, setValor] = useState('Inicial');
 
-    function quandoMudar(e) {
-        setValor(e.target.value)
+    const [valueState, setValueState] = useState('');
+
+    useEffect(() => {
+        setValueState(props?.inputValue)
+    }, [props?.inputValue])
+
+    function whenChangeState(e){
+        const initialValue = e.target.value  
+        setValueState(initialValue)
+        props.whenChange(initialValue)
     }
     return (
         <div className="field">
             <input
+            id={props.id}
+            name={props.name}
             type={props.type}
             placeholder={props.placeholder}
-            onChange={quandoMudar}
+            value={valueState}
+            onChange={whenChangeState}
         />
         </div>
         

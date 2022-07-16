@@ -1,0 +1,27 @@
+@import url('https://fonts.googleapis.com/css2?family=Oswald&display=swap');
+.button-group{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.cardDashboard {
+    font-family: 'Oswald';
+}
+
+.cardDashboard h2{
+    font-weight:unset;
+    font-size:30px;
+}
+
+.button-group Button{
+    padding:10px;
+}
+
+.table{
+    position: absolute;
+    left:0px;
+    width:100%;
+    overflow: scroll;
+}
