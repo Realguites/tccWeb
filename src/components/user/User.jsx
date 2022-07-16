@@ -145,10 +145,16 @@ export default function User() {
                 label={"Sair"}>
               </Button>
               <Button
-                label={"Usuários"}>
+                label={"Dashboards"}
+                onClick={function(_){
+                  window.location.href= '/dashboard'
+                }}>  
               </Button>
               <Button
-                label={"Gráficos"}>
+                label={"Gráficos"}
+                onClick={function(_){
+                  window.location.href= '/charts'
+                }}>
               </Button>
             </div>
           </div>
