@@ -1,12 +1,25 @@
 import './Table.css'
 import { FaTrashAlt } from 'react-icons/fa';
 import { GrUpdate } from "react-icons/gr";
+import axios from 'axios';
 
 
-const refresh = (id) => {
-    //e.stopPropagation(); 
-    console.log('TESTEEEEE ', id)
-    alert('batata')
+const axiosConfig = {
+    headers: {
+        'Authorization': `bearer ${localStorage.getItem("sipToken")}`
+    }
+};
+
+
+function setStatus(h, idDisp, data) {
+    axios.put('http://localhost:3001/smartphone/' + idDisp, JSON.parse('{"' + h + '":"' + data + '"}'), axiosConfig).then((response) => {
+        if (response.status === 204) {
+            alert("Usuário atualizado com sucesso!")
+        }
+    }).catch((e) => {
+        alert(e?.message)
+    })
+ 
 }
 
 // eslint-disable-next-line import/no-anonymous-default-export
@@ -37,7 +50,7 @@ export default props => {
                             <td>
                                 <button onClick={
                                     function (e) {
-                                        props.returnLineData('update',line?.id)
+                                        props.returnLineData('update', line?.id)
                                     }}>
                                     <GrUpdate />
                                 </button>
@@ -45,7 +58,12 @@ export default props => {
                             {
                                 props.keys.map((h) => {
                                     if (h === 'autCgm' || h === 'status') {
-                                        return (<td><select name={h} id={h + '_' + line[h]} defaultValue={line[h]} >
+                                        return (<td><select name={h} id={h + '_' + line[h]} defaultValue={line[h]} onChange={async (e) => {
+                                            const value = window.confirm(`Deseja alterar o status de ${line['usuario']} de ${line[h]} para ${!line[h]}?`)
+                                            if (value) {
+                                                setStatus(h, line['idDisp'], e?.target?.value)
+                                            }
+                                        }} >
                                             <option value="true">Ativo</option>
                                             <option value="false">Inativo</option>
                                         </select></td>
