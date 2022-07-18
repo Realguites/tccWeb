@@ -15,28 +15,6 @@ export default class Dashboard extends React.Component {
     //usuarioNome: localStorage.getItem("sipUser").substring(0, localStorage.getItem("sipUser").indexOf(" ") + 1)
   }
 
-  //setConfiguration({ maxScreenClass: 'xl' });
-  /*var usuarioNome = '';
-  let array = [];
-  const [array2, setArray2] = useState([])
-  if (localStorage.getItem("sipToken") !== null) {
-    usuarioNome = localStorage.getItem("sipUser").substring(0, localStorage.getItem("sipUser").indexOf(" ") + 1)
-  } else {
-    window.location.href = "/"
-  }
-
-   const getSmartphones = async () =>  {
-   await axios.get('http://localhost:3001/smartphone', {
-      headers: {
-        "Authorization": `bearer ${localStorage.getItem("sipToken")}`
-      }
-    }).then((response) => {
-      //setArray2({ smartphones: response.data })
-    }).catch((e) => {
-      alert(e)
-    })
-  }*/
-
   componentDidMount() {
     axios.get('http://localhost:3001/smartphone', {
       headers: {
