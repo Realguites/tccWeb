@@ -2,31 +2,59 @@ import { setConfiguration } from 'react-grid-system';
 import { Container, Row, Col } from 'react-grid-system';
 import Button from '../button/Button'
 import Table from '../table/Table';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import './Dashboard.css'
 import axios from 'axios';
 import React from 'react';
 
 
-export default class Dashboard extends React.Component {
+export default function Dashboard()  {
 
-  state = {
-    smartphones: []
-    //usuarioNome: localStorage.getItem("sipUser").substring(0, localStorage.getItem("sipUser").indexOf(" ") + 1)
-  }
+  const [smartphones, setSmartphones] = useState([])
 
-  componentDidMount() {
+  useEffect(() => {
+    getSmartphones()
+  }, [])
+
+  function getSmartphones(){
     axios.get('http://localhost:3001/smartphone', {
       headers: {
-        "Authorization": `bearer ${localStorage.getItem("sipToken")}`
+        "Authorization": `bearer ${localStorage?.getItem("sipToken")}`
       }
     }).then(res => {
-      const smartphones = res.data;
-      this.setState({ smartphones });
+      setSmartphones(res.data);
     })
   }
 
-  render() {
+  function deleteSmartphone(idDisp){
+    axios.delete('http://localhost:3001/smartphone/' + idDisp, axiosConfig).then((response) => {
+        if(response.status === 204){
+          alert(response.data)
+          setSmartphones(null)
+        }
+      }).catch((e) => {
+        alert(e?.message)
+      }).then(getSmartphones())
+  }
+
+  function getDataFromTable(condition, data){
+      if(condition === 'delete'){
+        if(window.confirm(`Tem certeza que deseja excluir ${data?.usuario}? Isso é irreversível!`)){
+          //deleteUser(data?.id)
+          deleteSmartphone(data?.idDisp)
+        }
+      }
+    //}
+    
+  }
+
+  const axiosConfig = {
+    headers: {
+      'Authorization': `bearer ${localStorage.getItem("sipToken")}`
+    }
+  };
+
+
     return (
       <Container>
         <Row>
@@ -89,7 +117,8 @@ export default class Dashboard extends React.Component {
                   'versaoEstavel',
                   'linkAtualizacao'
                 ]}
-                data={this.state.smartphones}
+                data={smartphones}
+                returnLineData={getDataFromTable}
               ></Table>
             </div>
           </Col>
@@ -97,4 +126,4 @@ export default class Dashboard extends React.Component {
       </Container>
     );
   }
-}
+

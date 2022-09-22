@@ -42,7 +42,7 @@ export default props => {
                             <td>
                                 <button onClick={
                                     function (e) {
-                                        props.returnLineData('delete', line?.id)
+                                        props.returnLineData('delete', line)
                                     }}>
                                     <FaTrashAlt />
                                 </button>
@@ -50,7 +50,7 @@ export default props => {
                             <td>
                                 <button onClick={
                                     function (e) {
-                                        props.returnLineData('update', line?.id)
+                                        props.returnLineData('update', line)
                                     }}>
                                     <GrUpdate />
                                 </button>
