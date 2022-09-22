@@ -38,9 +38,9 @@ export default function User() {
     getusers()
   }, [])
 
-  function getDataFromTable(condition, id){
+  function getDataFromTable(condition, data){
     setUserToEdit(users?.data?.filter((e)=>{
-      return e?.id === id
+      return e?.id === data?.id
     })[0])
     if(condition === 'update'){
       setName(userToEdit?.name)
@@ -51,7 +51,7 @@ export default function User() {
     }else{
       if(condition === 'delete'){
         if(window.confirm('Tem certeza que deseja excluir o usuário ' + userToEdit?.name + '? Isso é irreversível!')){
-          deleteUser(id)
+          deleteUser(data?.id)
         }
       }
     }
