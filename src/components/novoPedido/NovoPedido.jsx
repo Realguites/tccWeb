@@ -11,23 +11,43 @@ import React from 'react';
 
 export default class NovoPedido extends React.Component {
 
-  state = {
-    pedidos: []
-    //usuarioNome: localStorage.getItem("sipUser").substring(0, localStorage.getItem("sipUser").indexOf(" ") + 1)
+  constructor(props) {
+    super(props);
+    this.state = {date: new Date()};
   }
 
   componentDidMount() {
-    axios.get('http://localhost:3001/pedido', {
+    this.timerID = setInterval(
+      () => this.tick(),
+      1000
+    );
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.timerID);
+  }
+
+  tick() {
+    this.setState({
+      date: new Date()
+    });
+  }
+
+
+  /*componentDidMount() {
+    this.tick()
+    axios.get('http://localhost:3001/cliente/' + this.state.pesquisaCliente, {
       headers: {
         "Authorization": `bearer ${localStorage.getItem("sipToken")}`
       }
     }).then(res => {
-      const pedidos = res.data;
-      this.setState({ pedidos });
+      const clientes = res.data;
+      this.setState({ clientes });
     })
-  }
+  }*/
 
   render() {
+    //this.setState({comment: 'Hello'});
     return (
       <Container>
         <Row>
@@ -103,11 +123,14 @@ export default class NovoPedido extends React.Component {
             >
             </Input>
           </Col>
+          {this.state.date.toLocaleTimeString()}
           <Col sm={2}>
             <Button
               label={"Pesquisar"}
               onClick={function (_) {
-                window.location.href = '/charts'
+                console.log('TESTEEEE ' , this.state.date.toLocaleTimeString())
+                //this.setState({pesquisaCliente: 'Hello'});
+                //console.log('TESTEEEE ' + this.state.pesquisaCliente)
               }}>
             </Button>
           </Col>
