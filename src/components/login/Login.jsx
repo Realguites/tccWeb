@@ -21,6 +21,7 @@ export default props => {
         if(response.status === 200){
           localStorage.setItem("sipToken", response.data.token);
           localStorage.setItem("sipUser", response.data.user.name);
+          localStorage.setItem("sipCnpj", response.data.user.cnpj);
           alert(response.data.user.name + ", Bem-vindo!")
           window.location.href = "/dashboard";
         }

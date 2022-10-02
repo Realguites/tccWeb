@@ -22,7 +22,6 @@ function setStatus(h, idDisp, data) {
  
 }
 
-// eslint-disable-next-line import/no-anonymous-default-export
 export default props => {
     return (
         <div class="table-wrapper">
@@ -38,23 +37,28 @@ export default props => {
                 </thead>
                 <tbody>
                     {props?.data?.map((line, index) => {
+                        if(props.type === "pesquisaCliente"){
+                            
+                        }
                         return <tr>
-                            <td>
-                                <button onClick={
-                                    function (e) {
-                                        props.returnLineData('delete', line)
-                                    }}>
-                                    <FaTrashAlt />
-                                </button>
-                            </td>
-                            <td>
-                                <button onClick={
-                                    function (e) {
-                                        props.returnLineData('update', line)
-                                    }}>
-                                    <GrUpdate />
-                                </button>
-                            </td>
+                            
+                                <td>
+                                    <button onClick={
+                                        function (e) {
+                                            props.returnLineData('delete', line)
+                                        }}>
+                                        <FaTrashAlt />
+                                    </button>
+                                </td>
+                                <td>
+                                    <button onClick={
+                                        function (e) {
+                                            props.returnLineData('update', line)
+                                        }}>
+                                        <GrUpdate />
+                                    </button>
+                                </td>
+
                             {
                                 props.keys.map((h) => {
                                     if (h === 'autCgm' || h === 'status') {
