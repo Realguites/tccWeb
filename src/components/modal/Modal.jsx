@@ -23,6 +23,7 @@ export default props => {
       //if(window.confirm(`Tem certeza que deseja excluir ${data?.usuario}? Isso é irreversível!`)){
         //deleteUser(data?.id)
         console.log(data)
+        props.selectedData(data)
         //deleteSmartphone(data?.idDisp)
       //}
     }

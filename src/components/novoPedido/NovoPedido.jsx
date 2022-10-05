@@ -61,12 +61,14 @@ export default class NovoPedido extends React.Component {
     alert(this.state.pesquisaModalidade)
   }
 
-  callModalCliente = () => {
-    this.render(
-
-    )
-
+  selectedData(data){
+    switch(this.state.dataTypeModal){
+      case "client":
+        
+    }
+    console.log('CRIA PEDIDO: ', data)
   }
+
   getClientes = () => {
     let codCli = Number(this.state.pesquisaCliente)
     if (!isNaN(codCli)) {
@@ -92,6 +94,7 @@ export default class NovoPedido extends React.Component {
           dataModal: res.data,
           tittleModal: `Pesquisa Cliente por: ${this.state.pesquisaCliente}`, 
           keysModal: this.keysCliente,
+          dataTypeModal: "client",
           isOpenModal: true
         });
       })
@@ -101,7 +104,40 @@ export default class NovoPedido extends React.Component {
     })
   }
 
-
+  getProdutos = () => {
+    let codPro = Number(this.state.pesquisaProduto)
+    if (!isNaN(codPro)) {
+      axios.get(`http://localhost:3001/produto/${localStorage.getItem("sipCnpj")}/code/${this.state.pesquisaProduto}`, {
+        headers: {
+          "Authorization": `bearer ${localStorage.getItem("sipToken")}`
+        }
+      }).then(res => {
+        console.log(res.data)
+        this.setState({
+          codPro: res.data.codPro,
+          pesquisaProduto: res.data.nomPro
+        });
+        
+      })
+    } else {
+      axios.get(`http://localhost:3001/produto/${localStorage.getItem("sipCnpj")}/name/${this.state.pesquisaProduto}`, {
+        headers: {
+          "Authorization": `bearer ${localStorage.getItem("sipToken")}`
+        }
+      }).then(res => {
+        this.setState({
+          dataModal: res.data,
+          tittleModal: `Pesquisa produto por: ${this.state.pesquisaProduto}`, 
+          keysModal: this.keysProduto,
+          dataTypeModal: "product",
+          isOpenModal: true
+        });
+      })
+    }
+    this.setState({
+      isOpenModal: false
+    })
+  }
 
   render() {
     return (
@@ -159,7 +195,15 @@ export default class NovoPedido extends React.Component {
               >
               </Input>
             </Col>
-            <Col sm={8}>
+            <Col sm={2}>
+              <Button
+                label={"Inserir"}
+                onClick={() => {
+                  this.getClientes()
+                }}>
+              </Button>
+            </Col>
+            <Col sm={6}>
               <strong className={"fieldName"}>Cliente</strong>
               <Input
                 id={"cliente"}
@@ -169,6 +213,14 @@ export default class NovoPedido extends React.Component {
                 whenChange={this.setPesquisaCliente}
               >
               </Input>
+            </Col>
+            <Col sm={2}>
+              <Button
+                label={"Inserir"}
+                onClick={() => {
+                  this.getClientes()
+                }}>
+              </Button>
             </Col>
             </Row>
             <Row>
@@ -189,7 +241,7 @@ export default class NovoPedido extends React.Component {
               <Button
                 label={"Pesquisar"}
                 onClick={() => {
-                  this.getClientes()
+                  this.getProdutos()
                 }}>
               </Button>
             </Col>
@@ -226,6 +278,7 @@ export default class NovoPedido extends React.Component {
           isOpenModal={this.state.isOpenModal}
           keys={this.state.keysModal}
           data={this.state.dataModal}
+          selectedData={this.selectedData}
         />
       </div>
     );
