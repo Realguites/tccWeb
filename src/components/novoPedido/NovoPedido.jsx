@@ -3,6 +3,7 @@ import { Container, Row, Col } from 'react-grid-system';
 import Button from '../button/Button'
 import Table from '../table/Table';
 import InfoModal from '../modal/Modal';
+import ModalInsertProduct from '../modalInsertProduct/ModalInsertProduct';
 import './NovoPedido.css'
 import axios from 'axios';
 import Input from '../input/Input'
@@ -27,7 +28,9 @@ export default class NovoPedido extends React.Component {
       dataTypeModal: "",
       keysModal: [],
       isOpenModal: false,
+      isOpenModalInsertProduct: false,
       dataModal: [],
+      produtoASerInserido: null,
       tittleModal: ""
     };
   }
@@ -39,18 +42,25 @@ export default class NovoPedido extends React.Component {
       'fonCli',
       'email'
     ]
+  keysProduto = 
+    [
+      'codPro',
+      'desPro',
+      'uniPro',
+      'codBar'
+    ]
   
 
 
   setPesquisaCliente = (nome) => {
     this.setState({
-      pesquisaCliente: nome
+      pesquisaCliente: nome.toUpperCase()
     })
   }
 
   setPesquisaProduto = (nome) => {
     this.setState({
-      pesquisaProduto: nome
+      pesquisaProduto: nome.toUpperCase()
     })
   }
 
@@ -61,18 +71,34 @@ export default class NovoPedido extends React.Component {
     alert(this.state.pesquisaModalidade)
   }
 
-  selectedData(data){
-    switch(this.state.dataTypeModal){
-      case "client":
-        
-    }
-    console.log('CRIA PEDIDO: ', data)
+  
+  fechaModalProduct = () =>{
+    this.setState({
+      isOpenModalInsertProduct: false
+    })
   }
 
-  getClientes = () => {
-    let codCli = Number(this.state.pesquisaCliente)
+  selectedData = (data) => {
+    switch(this.state.dataTypeModal){
+      case "client":
+        break;
+      case "product":
+        const codPro = data.codPro;
+        this.getProdutos(codPro)
+        this.setState({
+          isOpenModal:false,
+          isOpenModalInsertProduct:true
+        })
+        break;
+        
+    }
+  }
+
+  getClientes = (codCli) => {
+    if(codCli == null)
+      codCli = Number(this.state.pesquisaCliente)
     if (!isNaN(codCli)) {
-      axios.get(`http://localhost:3001/cliente/${localStorage.getItem("sipCnpj")}/code/${this.state.pesquisaCliente}`, {
+      axios.get(`http://localhost:3001/cliente/${localStorage.getItem("sipCnpj")}/code/${codCli}`, {
         headers: {
           "Authorization": `bearer ${localStorage.getItem("sipToken")}`
         }
@@ -104,16 +130,19 @@ export default class NovoPedido extends React.Component {
     })
   }
 
-  getProdutos = () => {
-    let codPro = Number(this.state.pesquisaProduto)
+  getProdutos = (codPro) => {
+    if(codPro == null)
+      codPro = Number(this.state.pesquisaProduto)
     if (!isNaN(codPro)) {
-      axios.get(`http://localhost:3001/produto/${localStorage.getItem("sipCnpj")}/code/${this.state.pesquisaProduto}`, {
+      axios.get(`http://localhost:3001/produto/${localStorage.getItem("sipCnpj")}/code/${codPro}`, {
         headers: {
           "Authorization": `bearer ${localStorage.getItem("sipToken")}`
         }
       }).then(res => {
-        console.log(res.data)
+        console.log("ODIO: ", res.data)
+
         this.setState({
+          produtoASerInserido: res.data,
           codPro: res.data.codPro,
           pesquisaProduto: res.data.nomPro
         });
@@ -135,15 +164,14 @@ export default class NovoPedido extends React.Component {
       })
     }
     this.setState({
-      isOpenModal: false
+      isOpenModal: false,
+      isOpenModalInsertProduct: false
     })
   }
 
   render() {
     return (
       <div>
-
-        
         <Container>
           <Row>
             <Col sm={4}>
@@ -231,8 +259,7 @@ export default class NovoPedido extends React.Component {
                 name={"produto"}
                 type={"text"}
                 placeholder={"Insira um código ou nome para pesquisa"}
-              //whenChange={setLevel}
-              //inputValue={level}
+              whenChange={this.setPesquisaProduto}
               >
               </Input>
             </Col>
@@ -280,6 +307,14 @@ export default class NovoPedido extends React.Component {
           data={this.state.dataModal}
           selectedData={this.selectedData}
         />
+        <ModalInsertProduct
+          title={"Inserir Produto"}
+          produto={this.state.produtoASerInserido}
+          fechaModalProduct={this.fechaModalProduct}
+          isOpenModal={this.state.isOpenModalInsertProduct}
+        />
+
+        
       </div>
     );
   }
