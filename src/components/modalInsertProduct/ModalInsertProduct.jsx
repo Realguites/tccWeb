@@ -11,36 +11,23 @@ export default props => {
   const [show, setShow] = useState(false);
   const [codPro, setCodPro] = useState(0);
   const [desPro, setDesPro] = useState(0);
-  const [qtdPed, setQtdPed] = useState(0);
+  const [qtdPed, setQtdPed] = useState(1);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
   useEffect(() => {
     if (props.isOpenModal) {
       handleShow()
-      console.log('PRODUTO:: ', props.produto)
     }
   }, [props.isOpenModal])
 
 
-  function getDataFromTable(condition, data) {
-    if (condition === 'update') {
-      //if(window.confirm(`Tem certeza que deseja excluir ${data?.usuario}? Isso é irreversível!`)){
-      //deleteUser(data?.id)
-      console.log(data)
-      props.selectedData(data)
-      //deleteSmartphone(data?.idDisp)
-      //}
-    }
-    //}
-
-  }
   return (
     <>
 
       <Modal
         show={show}
-        onHide={handleClose}
+        onHide={props.isOpenModalInsertProduct}
         size="lg"
       >
         <Modal.Header closeButton>
@@ -107,10 +94,10 @@ export default props => {
                   id={"perDes"}
                   name={"perDes"}
                   type={"number"}
-                  onChange={(e)=>{
+                  onChange={(e) => {
                     setDesPro(e.target.value)
                   }}
-                  ></input>
+                ></input>
               </div>
             </Col>
             <Col sm={4}>
@@ -121,7 +108,7 @@ export default props => {
                   id={"qtdPed"}
                   name={"qtdPed"}
                   type={"number"}
-                  onChange={(e)=>{
+                  onChange={(e) => {
                     setQtdPed(e.target.value)
                   }}
                 ></input>
@@ -131,13 +118,15 @@ export default props => {
 
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="success" onClick={((e)=>{
-            props.returnedModalProductData(codPro, desPro, qtdPed)
-          }),
-          handleClose
+          <button onClick={
+            function (e) {
+              props.returnedModalProductData(props.produto.codPro, desPro, qtdPed)
+              setShow(false)
+            }
           }>
             Inserir Produto
-          </Button>
+          </button>
+          
           <Button variant="danger" onClick={
             handleClose
           }>

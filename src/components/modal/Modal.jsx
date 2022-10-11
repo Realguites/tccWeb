@@ -34,8 +34,8 @@ export default props => {
     <>
 
       <Modal
-        show={show}
-        onHide={handleClose}
+        show={props.isOpenModal || show}
+        onHide={props.isOpenModal || handleClose}
         size="lg"
        >
         <Modal.Header closeButton>

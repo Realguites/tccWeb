@@ -35,22 +35,43 @@ export default class NovoPedido extends React.Component {
     };
   }
 
-  keysCliente = 
+  keysCliente =
     [
       'codCli',
       'nomCli',
       'fonCli',
       'email'
     ]
-  keysProduto = 
+  keysProduto =
     [
       'codPro',
       'desPro',
       'uniPro',
       'codBar'
     ]
-  
 
+  toDefaultMoneyMask = (value) => {
+      return value.toLocaleString('pt-br', {
+        currency: 'BRL',
+        style: 'currency',
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      })
+   
+  }
+
+  formatDataToTable = (values) => {
+    let newArray = values.slice()
+    console.log(newArray)
+    newArray.map((e) => {
+      e.vlrDes = this.toDefaultMoneyMask(e.vlrDes)
+      e.vlrLiq = this.toDefaultMoneyMask(e.vlrLiq)
+      e.vlrUni = this.toDefaultMoneyMask(e.vlrUni)
+      e.totIte = this.toDefaultMoneyMask(e.totIte)
+      console.log('ODIIO: ', e)
+    })
+    return newArray
+  }
 
   setPesquisaCliente = (nome) => {
     this.setState({
@@ -64,6 +85,27 @@ export default class NovoPedido extends React.Component {
     })
   }
 
+  returnedModalProductData = (codPro, desPro, qtdPed) => {
+    const vlrDes = (this.state.produtoASerInserido.quantidade.prcVen * (Number(desPro) / 100))
+    const vlrLiq = this.state.produtoASerInserido.quantidade.prcVen - vlrDes
+    let product = {
+      "codPro": codPro,
+      "seqIte": this.state.pedidoProdutos.length + 1,
+      "qtdIte": Number(qtdPed),
+      "vlrUni": this.state.produtoASerInserido.quantidade.prcVen.toFixed(2),
+      "perDes": Number(desPro),
+      "vlrDes": vlrDes.toFixed(2),
+      "desPro": this.state.produtoASerInserido.desPro,
+      "vlrLiq": vlrLiq.toFixed(2),
+      "totIte": Number((Number(qtdPed) * vlrLiq).toFixed(2))
+    }
+    this.state.pedidoProdutos.push(product)
+    this.setState({
+      isOpenModal: false,
+      isOpenModalInsertProduct: false
+    })
+  }
+
   setPesquisaModalidade = (nome) => {
     this.setState({
       pesquisaModalidade: nome
@@ -71,31 +113,31 @@ export default class NovoPedido extends React.Component {
     alert(this.state.pesquisaModalidade)
   }
 
-  
-  fechaModalProduct = () =>{
+
+  fechaModalProduct = () => {
     this.setState({
       isOpenModalInsertProduct: false
     })
   }
 
   selectedData = (data) => {
-    switch(this.state.dataTypeModal){
+    switch (this.state.dataTypeModal) {
       case "client":
         break;
       case "product":
         const codPro = data.codPro;
         this.getProdutos(codPro)
         this.setState({
-          isOpenModal:false,
-          isOpenModalInsertProduct:true
+          isOpenModal: false,
+          isOpenModalInsertProduct: true
         })
         break;
-        
+
     }
   }
 
   getClientes = (codCli) => {
-    if(codCli == null)
+    if (codCli == null)
       codCli = Number(this.state.pesquisaCliente)
     if (!isNaN(codCli)) {
       axios.get(`http://localhost:3001/cliente/${localStorage.getItem("sipCnpj")}/code/${codCli}`, {
@@ -103,12 +145,12 @@ export default class NovoPedido extends React.Component {
           "Authorization": `bearer ${localStorage.getItem("sipToken")}`
         }
       }).then(res => {
-        console.log(res.data)
+        console.log("teste ",res.data)
         this.setState({
           codCli: res.data.codCli,
           pesquisaCliente: res.data.nomCli
         });
-        
+
       })
     } else {
       axios.get(`http://localhost:3001/cliente/${localStorage.getItem("sipCnpj")}/name/${this.state.pesquisaCliente}`, {
@@ -118,7 +160,7 @@ export default class NovoPedido extends React.Component {
       }).then(res => {
         this.setState({
           dataModal: res.data,
-          tittleModal: `Pesquisa Cliente por: ${this.state.pesquisaCliente}`, 
+          tittleModal: `Pesquisa Cliente por: ${this.state.pesquisaCliente}`,
           keysModal: this.keysCliente,
           dataTypeModal: "client",
           isOpenModal: true
@@ -131,7 +173,7 @@ export default class NovoPedido extends React.Component {
   }
 
   getProdutos = (codPro) => {
-    if(codPro == null)
+    if (codPro == null)
       codPro = Number(this.state.pesquisaProduto)
     if (!isNaN(codPro)) {
       axios.get(`http://localhost:3001/produto/${localStorage.getItem("sipCnpj")}/code/${codPro}`, {
@@ -139,14 +181,14 @@ export default class NovoPedido extends React.Component {
           "Authorization": `bearer ${localStorage.getItem("sipToken")}`
         }
       }).then(res => {
-        console.log("ODIO: ", res.data)
-
+        console.log('TESTEEEE ', res.data)
         this.setState({
           produtoASerInserido: res.data,
           codPro: res.data.codPro,
+          isOpenModalInsertProduct: true,
           pesquisaProduto: res.data.nomPro
         });
-        
+
       })
     } else {
       axios.get(`http://localhost:3001/produto/${localStorage.getItem("sipCnpj")}/name/${this.state.pesquisaProduto}`, {
@@ -156,7 +198,7 @@ export default class NovoPedido extends React.Component {
       }).then(res => {
         this.setState({
           dataModal: res.data,
-          tittleModal: `Pesquisa produto por: ${this.state.pesquisaProduto}`, 
+          tittleModal: `Pesquisa produto por: ${this.state.pesquisaProduto}`,
           keysModal: this.keysProduto,
           dataTypeModal: "product",
           isOpenModal: true
@@ -179,6 +221,7 @@ export default class NovoPedido extends React.Component {
                 src={require("../images/cgm_logo.png")}
                 style={{
                   paddingTop: "20px",
+                  paddingBottom: "10px",
                   maxWidth: "400px",
                   width: "100%",
                   height: "auto"
@@ -192,27 +235,11 @@ export default class NovoPedido extends React.Component {
             <Col sm={4}>
               <div className="cardNovoPedido">
                 <h2>Bem-vindo(a) <strong>{localStorage.getItem("sipUser").substring(0, localStorage.getItem("sipUser").indexOf(" ") + 1)}</strong></h2>
-                <div className="button-group">
-                  <Button
-                    label={"Sair"}>
-                  </Button>
-                  <Button
-                    label={"Gravar"}
-                    onClick={function (_) {
-                      window.location.href = '/users'
-                    }}>
-                  </Button>
-                  <Button
-                    label={"Cancelar"}
-                    onClick={function (_) {
-                      window.location.href = '/charts'
-                    }}>
-                  </Button>
-                </div>
+
               </div>
             </Col>
           </Row>
-          <Row>
+          <Row className="row">
             <Col sm={2}>
               <strong className={"fieldName"}>Modalidade</strong>
               <Input
@@ -250,16 +277,16 @@ export default class NovoPedido extends React.Component {
                 }}>
               </Button>
             </Col>
-            </Row>
-            <Row>
-            <Col sm={8}>
+          </Row>
+          <Row className="row">
+            <Col sm={6}>
               <strong className={"fieldName"}>Produtos</strong>
               <Input
                 id={"produto"}
                 name={"produto"}
                 type={"text"}
                 placeholder={"Insira um código ou nome para pesquisa"}
-              whenChange={this.setPesquisaProduto}
+                whenChange={this.setPesquisaProduto}
               >
               </Input>
             </Col>
@@ -272,33 +299,49 @@ export default class NovoPedido extends React.Component {
                 }}>
               </Button>
             </Col>
+            <Col sm={2} className="cancelButton">
+              <Button
+
+                label={"Cancelar"}
+                onClick={() => {
+                  this.getProdutos()
+                }}>
+              </Button>
+            </Col>
+            <Col sm={2} className="saveButton">
+              <Button
+                label={"Gravar"}
+                onClick={() => {
+                  this.getProdutos()
+                }}>
+              </Button>
+            </Col>
           </Row>
           <Row>
             <Col sm={12}>
               <div className="table">
                 <Table
                   keys={[
-                    'idDisp',
-                    'cnpj',
-                    'usuario',
-                    'status',
-                    'codLoj',
-                    'nomLoj',
-                    'versao',
-                    'autCgm',
-                    'nLocal',
-                    'nAndroid',
-                    'dLocal',
-                    'dAndroid',
-                    'versaoEstavel',
-                    'linkAtualizacao'
+                    'seqIte',
+                    'codPro',
+                    'desPro',
+                    'qtdIte',
+                    'vlrUni',
+                    'perDes',
+                    'vlrDes',
+                    'vlrLiq',
+                    'totIte'
                   ]}
-                  data={this.state.pedidos}
+                  data={this.state.pedidoProdutos}
                 ></Table>
               </div>
             </Col>
           </Row>
+
+
+
         </Container>
+
         <InfoModal
           title={this.state.tittleModal}
           dataTypeModal={this.state.dataTypeModal}
@@ -312,10 +355,17 @@ export default class NovoPedido extends React.Component {
           produto={this.state.produtoASerInserido}
           fechaModalProduct={this.fechaModalProduct}
           isOpenModal={this.state.isOpenModalInsertProduct}
+          returnedModalProductData={this.returnedModalProductData}
         />
+        <div className="footer">
+          <strong>{this.toDefaultMoneyMask(this.state.pedidoProdutos.reduce((acumulado, valorIteracao) => {
+            console.log(valorIteracao)
+            return acumulado + valorIteracao?.totIte
+          }, 0))}</strong>
+        </div>
 
-        
       </div>
+
     );
   }
 }
