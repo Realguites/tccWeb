@@ -24,6 +24,7 @@ export default props => {
         //deleteUser(data?.id)
         console.log(data)
         props.selectedData(data)
+        setShow(false);
         //deleteSmartphone(data?.idDisp)
       //}
     }

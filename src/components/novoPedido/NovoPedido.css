@@ -77,3 +77,22 @@
     color: red;
     font-size: 42px;
 }
+
+.cardNovoPedido{
+    margin-top:10px;
+    border-radius: 15px;
+    border:1px;
+    padding: 20px;
+    border-style: solid ;
+    border-color: #404040;
+}
+
+.nomeCliente{
+    color: #003366;
+    font-weight: 50px;
+}
+
+.nomeModalidade{
+    color: #003366;
+    font-weight: 50px;
+}
