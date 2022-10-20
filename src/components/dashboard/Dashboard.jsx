@@ -78,7 +78,12 @@ export default function Dashboard()  {
               <h2>Bem-vindo(a) <strong>{localStorage.getItem("sipUser").substring(0, localStorage.getItem("sipUser").indexOf(" ") + 1)}</strong></h2>
               <div className="button-group">
                 <Button
-                  label={"Sair"}>
+                  label={"Sair"}
+                  onClick={function(_){
+                    localStorage.setItem("sipToken", null)
+                    window.location.href= '/'
+                  }}
+                  >
                 </Button>
                 <Button
                   label={"Usuários"}

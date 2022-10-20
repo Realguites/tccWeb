@@ -10,9 +10,18 @@ const axiosConfig = {
     }
 };
 
+const toDefaultMoneyMask = (value) => {
+    return value.toLocaleString('pt-br', {
+      currency: 'BRL',
+      style: 'currency',
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    })
+
+  }
 
 function setStatus(h, idDisp, data) {
-    axios.put('http://localhost:3001/smartphone/' + idDisp, JSON.parse('{"' + h + '":"' + data + '"}'), axiosConfig).then((response) => {
+    axios.put('http://localhost:3001/smartphone/' + idDisp, JSON.parse('{"' + h.id + '":"' + data + '"}'), axiosConfig).then((response) => {
         if (response.status === 204) {
             alert("Usuário atualizado com sucesso!")
         }
@@ -20,6 +29,25 @@ function setStatus(h, idDisp, data) {
         alert(e?.message)
     })
  
+}
+
+const returnFormatedData = (data, type) =>{
+    switch(type){
+        default: return data
+        case 'money':
+            return toDefaultMoneyMask(toDefaultMoneyMask(data))
+        case 'perCent':
+            return data.toString() + "%"
+        case 'date' :
+            const date = new Date(data)
+            if(date != 'Invalid Date')
+                return date.toLocaleDateString() + " - " + date.toLocaleTimeString()
+            else
+                return '-'
+
+            
+
+    }
 }
 
 export default props => {
@@ -31,7 +59,7 @@ export default props => {
                         <th></th>
                         <th></th>
                         {props?.keys?.map((h) => {
-                            return <th>{h}</th>
+                            return <th>{h.label}</th>
                         })}
                     </tr>
                 </thead>
@@ -61,11 +89,11 @@ export default props => {
 
                             {
                                 props.keys.map((h) => {
-                                    if (h === 'autCgm' || h === 'status') {
-                                        return (<td><select name={h} id={h + '_' + line[h]} defaultValue={line[h]} onChange={async (e) => {
-                                            const value = window.confirm(`Deseja alterar o status de ${line['usuario']} de ${line[h]} para ${!line[h]}?`)
+                                    if (h.id === 'autCgm' || h.id === 'status') {
+                                        return (<td><select name={h.id} id={h.id + '_' + line[h.id]} defaultValue={line[h.id]} onChange={async (e) => {
+                                            const value = window.confirm(`Deseja alterar o status de ${line['usuario']} de ${line[h.id]} para ${!line[h.id]}?`)
                                             if (value) {
-                                                setStatus(h, line['idDisp'], e?.target?.value)
+                                                setStatus(h.id, line['idDisp'], e?.target?.value)
                                             }
                                         }} >
                                             <option value="true">Ativo</option>
@@ -73,12 +101,12 @@ export default props => {
                                         </select></td>
                                         )
                                     }
-                                    if (h === 'versaoEstavel' || h === 'linkAtualizacao')
+                                    if (h.id === 'versaoEstavel' || h.id === 'linkAtualizacao')
                                         return <td><input
-                                            value={line[h]}
+                                            value={line[h.id]}
                                         ></input></td>
 
-                                    return (<td>{line[h]}</td>)
+                                    return (<td>{returnFormatedData(line[h.id], h.type)}</td>)
                                 })
                             }</tr>
 

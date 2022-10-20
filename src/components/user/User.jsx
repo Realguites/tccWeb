@@ -258,14 +258,14 @@ export default function User() {
             <div className="table">
             <Table
                 keys={[
-                  'id',
-                  'name',
-                  'email',
-                  'level',
-                  'status',
-                  'cnpj',
-                  'registrationDate',
-                  'updateDate'
+                  {id:'id',label: 'Código', type:'number'},
+                  {id:'name',label: 'Nome', type:'string'},
+                  {id:'email',label: 'Email', type:'string'},
+                  {id:'level',label: 'Nível', type:'string'},
+                  {id:'status',label: 'Status', type:'string'},
+                  {id:'cnpj',label: 'CNPJ', type:'string'},
+                  {id:'registrationDate',label: 'Data de Criação', type:'date'},
+                  {id:'updateDate', label: 'Data de atualização', type:'date'}
                 ]}
                 data={users?.data}
                 returnLineData={getDataFromTable}

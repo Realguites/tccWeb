@@ -5,6 +5,7 @@ import Table from '../table/Table';
 import InfoModal from '../modal/Modal';
 import ModalInsertProduct from '../modalInsertProduct/ModalInsertProduct';
 import './NovoPedido.css'
+import { isExpired, decodeToken } from "react-jwt";
 import axios from 'axios';
 import Input from '../input/Input'
 import React from 'react';
@@ -35,31 +36,39 @@ export default class NovoPedido extends React.Component {
       nomeClienteInserido: null,
       tittleModal: "",
       codModalidade: 0,
-      nomeModalidade: null
+      nomeModalidade: null,
+      userData: decodeToken(localStorage.getItem("sipToken"))?.user
     };
   }
-
+/**{id:'id', label: 'Registro', type: 'numeric'},
+                  {id:'codLoj', label: 'Cód Loja', type: 'numeric'},
+                  {id:'codMod', label: 'Cód Modalidade', type: 'numeric'},
+                  {id:'codCli', label: 'Cód Cliente', type: 'numeric'},
+                  {id:'nomCli', label: 'Nome Cliente', type: 'string'},
+                  {id:'perDes', label: 'Percentual Desconto', type: 'perCent'},
+                  {id:'vlrReg', label: 'Valor total', type: 'money'},
+                  {id:'data', label: 'Data', type: 'date'} */
   keysCliente =
     [
-      'codCli',
-      'nomCli',
-      'fonCli',
-      'email'
+      {id:'codCli', label:'Código', type: 'number'},
+      {id:'nomCli', label:'Nome', type: 'string'},
+      {id:'fonCli', label:'Telefone', type: 'string'},
+      {id:'email' , label:'Email', type: 'string'}
     ]
   keysProduto =
     [
-      'codPro',
-      'desPro',
-      'uniPro',
-      'codBar'
+      {id:'codPro', label:'Código', type: 'number'},
+      {id:'desPro', label:'Descrição do produto', type: 'string'},
+      {id:'uniPro', label:'Unidade de venda', type: 'string'},
+      {id:'codBar', label:'Código de barras', type: 'string'}
     ]
 
   keysModalidade =
     [
-      'codMod',
-      'ideMod',
-      'desCad',
-      'desIte'
+      {id:'codMod', label:'Código', type: 'number'},
+      {id:'ideMod', label:'Descrição da modalidade', type: 'string'},
+      {id:'desCad', label:'Permite desconto de Cadastro', type: 'string'},
+      {id:'desIte', label:'Permite desconto de Item', type: 'string'}
     ]
 
   toDefaultMoneyMask = (value) => {
@@ -114,6 +123,7 @@ export default class NovoPedido extends React.Component {
       'vlrUni': Number(this.state.produtoASerInserido.quantidade.prcVen.toFixed(2)),
       'perDes': Number(desPro),
       'vlrDes': Number(vlrDes.toFixed(2)),
+      'cnpj': localStorage.getItem("sipCnpj"),
       'desPro': this.state.produtoASerInserido.desPro,
       'vlrLiq': Number(vlrLiq.toFixed(2)),
       'totIte': Number((Number(qtdPed) * vlrLiq).toFixed(2)),
@@ -251,8 +261,9 @@ export default class NovoPedido extends React.Component {
         'Authorization': `bearer ${localStorage.getItem("sipToken")}`
       }
     };
-    const codAte = 1; //necessita ser buscado na api os valore necessarios
+    const codAte = this.state.userData?.id; //necessita ser buscado na api os valore necessarios
     var md5 = require('md5');
+    
     const pedido = {
       'codLoj': 1,
       'codAte': codAte,
@@ -264,10 +275,11 @@ export default class NovoPedido extends React.Component {
       'data': new Date(),
       'hora': new Date(),
       'obsAte': '',
+      'cnpj': this.state.userData.cnpj,
       'idDisp': md5(codAte.toString().substring(0,15)),
       'produtosPedido': this.state.pedidoProdutos
     }
-    axios.post(`http://localhost:3001/pedido/${localStorage.getItem("sipCnpj")}`, JSON.parse(JSON.stringify(pedido)), axiosConfig).then((response) => {
+    axios.post(`http://localhost:3001/pedido`, pedido, axiosConfig).then((response) => {
         if(response.status === 201){
           alert("Pedido inserido com sucesso!")
           //setUserToEdit(null)
@@ -353,7 +365,7 @@ export default class NovoPedido extends React.Component {
             </Col>
             <Col sm={4}>
               <div className="cardNovoPedido">
-                <h2>Bem-vindo(a) <strong>{localStorage.getItem("sipUser").substring(0, localStorage.getItem("sipUser").indexOf(" ") + 1)}</strong></h2>
+                <h2>Bem-vindo(a) <strong>{localStorage.getItem("sipUser").substring(0, localStorage.getItem("sipUser").indexOf(" ") + 1)}</strong></h2><a href="" onClick="alert('batata)'">Sair</a>
                 <h5>{this.state.nomeClienteInserido != null ? <strong>Cliente selecionado: <strong className="nomeCliente">{this.state.nomeClienteInserido}</strong></strong> : ''}</h5>
                 <h5>{this.state.nomeModalidade != null ?<strong>Modalidade: <strong className="nomeModalidade"> {this.state.nomeModalidade}</strong></strong> : ''}</h5>
               </div>
@@ -442,15 +454,15 @@ export default class NovoPedido extends React.Component {
               <div className="table">
                 <Table
                   keys={[
-                    'seqIte',
-                    'codPro',
-                    'desPro',
-                    'qtdIte',
-                    'vlrUni',
-                    'perDes',
-                    'vlrDes',
-                    'vlrLiq',
-                    'totIte'
+                    {id:'seqIte', label:'Sequência do Item',type:'number'},
+                    {id:'codPro', label:'Código do Produto',type:'number'},
+                    {id:'desPro', label:'Descrição do Produto',type:'string'},
+                    {id:'qtdIte', label:'Quantidade inserida',type:'number'},
+                    {id:'vlrUni', label:'Valor Unitário',type:'money'},
+                    {id:'perDes', label:'Percentual de desconto',type:'perCent'},
+                    {id:'vlrDes', label:'Valor desconto',type:'money'},
+                    {id:'vlrLiq', label:'Valor líquido',type:'money'},
+                    {id:'totIte', label:'Total do Item',type:'money'}           
                   ]}
                   data={this.state.pedidoProdutos}
                 ></Table>
