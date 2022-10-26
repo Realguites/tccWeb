@@ -17,6 +17,7 @@ export default (props) => {
         <Route exact path="/charts" element={<Chart />} />
         <Route exact path="/pedidos" element={<Pedido />} />
         <Route exact path="/novoPedido" element={<NovoPedido />} />
+        <Route exact path="/novoPedido/id=:id" element={<NovoPedido />} />
       </Routes>
     </Router>
   )

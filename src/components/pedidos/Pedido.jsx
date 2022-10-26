@@ -28,6 +28,24 @@ export default class Pedido extends React.Component {
     })
   }
 
+  getDataFromTable = (condition, data) => {
+    console.log('tesssteeeeeee ' , data)
+    if(condition === 'delete'){
+      if(window.confirm(`Tem certeza que deseja excluir ${data?.usuario}? Isso é irreversível!`)){
+        //deleteUser(data?.id)
+        //deleteSmartphone(data?.idDisp)
+      }
+    }else{
+      if(condition === 'update'){
+        console.log('AAHHHHHHHHHHHHHHHHHHHHHHHh ', data.id)
+        window.location.href = '/novoPedido/' + 'id=' + data.id
+      }
+    }
+  //}
+  
+}
+
+
   render() {
     return (
       <Container>
@@ -55,15 +73,9 @@ export default class Pedido extends React.Component {
                   label={"Sair"}>
                 </Button>
                 <Button
-                  label={"Usuários"}
+                  label={"Novo Pedido"}
                   onClick={function (_) {
-                    window.location.href = '/users'
-                  }}>
-                </Button>
-                <Button
-                  label={"Gráficos"}
-                  onClick={function (_) {
-                    window.location.href = '/charts'
+                    window.location.href = '/novoPedido'
                   }}>
                 </Button>
               </div>
@@ -91,6 +103,7 @@ export default class Pedido extends React.Component {
                   { id: 'data', label: 'Data', type: 'date' }
                 ]}
                 data={this.state.pedidos}
+                returnLineData={this.getDataFromTable}
               ></Table>
             </div>
           </Col>

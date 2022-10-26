@@ -107,20 +107,20 @@ export default function Dashboard()  {
             <div className="table">
               <Table
                 keys={[
-                  'idDisp',
-                  'cnpj',
-                  'usuario',
-                  'status',
-                  'codLoj',
-                  'nomLoj',
-                  'versao',
-                  'autCgm',
-                  'nLocal',
-                  'nAndroid',
-                  'dLocal',
-                  'dAndroid',
-                  'versaoEstavel',
-                  'linkAtualizacao'
+                  {id:'idDisp',label:'Id do Dispositivo', type:'string'},
+                  {id:'cnpj',label:'CNPJ', type:'string'},
+                  {id:'usuario',label:'Usuário', type:'string'},
+                  {id:'status',label:'Status', type:'string'},
+                  {id:'codLoj',label:'Cód. loja', type:'number'},
+                  {id:'nomLoj',label:'Nome loja', type:'string'},
+                  {id:'versao',label:'Versão', type:'string'},
+                  {id:'autCgm',label:'Autorização CGM', type:'string'},
+                  {id:'nLocal',label:'Número de envios local', type:'number'},
+                  {id:'nAndroid',label:'Número de envios android', type:'number'},
+                  {id:'dLocal',label:'Data último envio local', type:'date'},
+                  {id:'dAndroid',label:'Data último envio android', type:'date'},
+                  {id:'versaoEstavel',label:'Versão Estável', type:'string'},
+                  {id:'linkAtualizacao',label:'Link de atualização', type:'string'}
                 ]}
                 data={smartphones}
                 returnLineData={getDataFromTable}

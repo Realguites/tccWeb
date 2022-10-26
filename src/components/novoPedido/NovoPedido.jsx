@@ -9,13 +9,17 @@ import { isExpired, decodeToken } from "react-jwt";
 import axios from 'axios';
 import Input from '../input/Input'
 import React from 'react';
-
+import { useParams } from "react-router-dom";
+import { useEffect } from 'react';
 
 
 export default class NovoPedido extends React.Component {
 
+  
   constructor(props) {
+    
     super(props);
+    console.log(window.location.href)
     this.state = {
       pesquisaCliente: "",
       pesquisaModalidade: "",
@@ -36,18 +40,26 @@ export default class NovoPedido extends React.Component {
       nomeClienteInserido: null,
       tittleModal: "",
       codModalidade: 0,
+      codPedUpdate: this.isNewOrUpdate(),
       nomeModalidade: null,
       userData: decodeToken(localStorage.getItem("sipToken"))?.user
     };
   }
-/**{id:'id', label: 'Registro', type: 'numeric'},
-                  {id:'codLoj', label: 'Cód Loja', type: 'numeric'},
-                  {id:'codMod', label: 'Cód Modalidade', type: 'numeric'},
-                  {id:'codCli', label: 'Cód Cliente', type: 'numeric'},
-                  {id:'nomCli', label: 'Nome Cliente', type: 'string'},
-                  {id:'perDes', label: 'Percentual Desconto', type: 'perCent'},
-                  {id:'vlrReg', label: 'Valor total', type: 'money'},
-                  {id:'data', label: 'Data', type: 'date'} */
+
+  isNewOrUpdate = () => {
+    const url = window.location.href
+    const pos = url.indexOf('id=')
+    if(pos === -1)
+      return 0
+    else{
+      const codPed = Number(url.substr(pos + 3, url.length))
+      this.searchPedido(codPed)
+      return codPed
+    }
+      
+  }
+
+
   keysCliente =
     [
       {id:'codCli', label:'Código', type: 'number'},
@@ -72,6 +84,7 @@ export default class NovoPedido extends React.Component {
     ]
 
   toDefaultMoneyMask = (value) => {
+
     return value.toLocaleString('pt-br', {
       currency: 'BRL',
       style: 'currency',
@@ -79,6 +92,24 @@ export default class NovoPedido extends React.Component {
       maximumFractionDigits: 2
     })
 
+  }
+
+  searchPedido = (codPed) =>{
+    axios.get(`http://localhost:3001/pedido/${this.state?.userData?.cnpj}/${codPed}`, {
+      headers: {
+        "Authorization": `bearer ${localStorage.getItem("sipToken")}`
+      }
+    }).then(res => {
+      this.setState({
+      pesquisaModalidade: res.data?.codMod,
+      pedidoCodCli: res.data?.codCli,
+      pedidoCodMod: res.data?.codMod,
+      pedidoProdutos: res.data?.produtosPedido,
+      nomeClienteInserido: res.data?.nomCli,
+      userData: decodeToken(localStorage.getItem("sipToken"))?.user
+      })
+      this.getModalidades()
+    })
   }
 
   formatDataToTable = (values) => {
@@ -135,7 +166,6 @@ export default class NovoPedido extends React.Component {
       isOpenModalInsertProduct: false
     })
   }
-
 
 
   fechaModalProduct = () => {
@@ -213,6 +243,7 @@ export default class NovoPedido extends React.Component {
       isOpenModal: false
     })
   }
+
 
   getModalidades = () => {
     axios.get(`http://localhost:3001/modalidade/${localStorage.getItem("sipCnpj")}`, {
@@ -436,7 +467,7 @@ export default class NovoPedido extends React.Component {
 
                 label={"Cancelar"}
                 onClick={() => {
-                  this.getProdutos()
+                  window.location.href = '/pedidos'
                 }}>
               </Button>
             </Col>
