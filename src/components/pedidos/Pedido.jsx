@@ -28,16 +28,29 @@ export default class Pedido extends React.Component {
     })
   }
 
+  deletePedido = (id) => {
+    axios.delete('http://localhost:3001/pedido/' + this.userData?.cnpj + '/' + id, {
+      headers: {
+        "Authorization": `bearer ${localStorage.getItem("sipToken")}`
+      }
+    }).then((response) => {
+        if(response.status === 201){
+          alert("Pedido excluído")
+        }
+      }).catch((e) => {
+        alert(e?.message)
+      })
+  }
+
+  
   getDataFromTable = (condition, data) => {
     console.log('tesssteeeeeee ' , data)
     if(condition === 'delete'){
-      if(window.confirm(`Tem certeza que deseja excluir ${data?.usuario}? Isso é irreversível!`)){
-        //deleteUser(data?.id)
-        //deleteSmartphone(data?.idDisp)
+      if(window.confirm(`Tem certeza que deseja excluir o pedido ${data?.id}? Isso é irreversível!`)){
+        this.deletePedido(data?.id) 
       }
     }else{
       if(condition === 'update'){
-        console.log('AAHHHHHHHHHHHHHHHHHHHHHHHh ', data.id)
         window.location.href = '/novoPedido/' + 'id=' + data.id
       }
     }

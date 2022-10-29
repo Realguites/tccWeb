@@ -344,6 +344,7 @@ export default class NovoPedido extends React.Component {
         console.log(e)
         alert(e?.message)
       }).then((r)=>{
+        window.location.href = '/pedidos/'
         console.log(r)
       })
     else
@@ -355,6 +356,7 @@ export default class NovoPedido extends React.Component {
         console.log(e)
         alert(e?.message)
       }).then((r)=>{
+        window.location.href = '/pedidos/'
         console.log(r)
       })
   }
