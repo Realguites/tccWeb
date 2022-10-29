@@ -9,8 +9,6 @@ import { isExpired, decodeToken } from "react-jwt";
 import axios from 'axios';
 import Input from '../input/Input'
 import React from 'react';
-import { useParams } from "react-router-dom";
-import { useEffect } from 'react';
 
 
 export default class NovoPedido extends React.Component {
@@ -103,7 +101,9 @@ export default class NovoPedido extends React.Component {
       this.setState({
       pesquisaModalidade: res.data?.codMod,
       pedidoCodCli: res.data?.codCli,
+      codCienteInserido: res.data?.codCli,
       pedidoCodMod: res.data?.codMod,
+      codModalidade: res.data?.codMod,
       pedidoProdutos: res.data?.produtosPedido,
       nomeClienteInserido: res.data?.nomCli,
       userData: decodeToken(localStorage.getItem("sipToken"))?.user
@@ -141,6 +141,31 @@ export default class NovoPedido extends React.Component {
     })
   }
 
+  getDataFromTable = (condition, data) => {
+    //console.log('tesssteeeeeee ' , data)
+    if(condition === 'delete'){
+      if(window.confirm(`Tem certeza que deseja remover o item ${data?.desPro} do pedido?`)){
+        //this.state.pedidoProdutos.push(product)
+        const item = this.state.pedidoProdutos.filter((e)=>{
+          return e?.codPro === data?.codPro
+        })
+        const index = this.state.pedidoProdutos.indexOf(item[0])
+        console.log('produto pra remover: ', this.state.pedidoProdutos[this.state.pedidoProdutos.indexOf(item[0])])
+        let aux = this.state.pedidoProdutos
+        //aux.slice(index, 1)
+        aux.pop()
+        console.log('INDEX: ', index)
+        console.log('aux ', aux)
+        this.setState({
+          pedidoProdutos: aux
+        })
+
+        //console.log(this.state.pedidoProdutos.slice(index, 1))
+      }
+    }
+  //}
+  
+}
 
   returnedModalProductData = (codPro, desPro, qtdPed) => {
     const codAte = 1; //necessita ser buscado na api os valore necessarios
@@ -310,10 +335,21 @@ export default class NovoPedido extends React.Component {
       'idDisp': md5(codAte.toString().substring(0,15)),
       'produtosPedido': this.state.pedidoProdutos
     }
-    axios.post(`http://localhost:3001/pedido`, pedido, axiosConfig).then((response) => {
+    if(this.state.codPedUpdate === 0)
+      axios.post(`http://localhost:3001/pedido`, pedido, axiosConfig).then((response) => {
+          if(response.status === 201){
+            alert("Pedido inserido com sucesso!")
+          }
+      }).catch((e) => {
+        console.log(e)
+        alert(e?.message)
+      }).then((r)=>{
+        console.log(r)
+      })
+    else
+      axios.put(`http://localhost:3001/pedido/${this.state.codPedUpdate}`, pedido, axiosConfig).then((response) => {
         if(response.status === 201){
-          alert("Pedido inserido com sucesso!")
-          //setUserToEdit(null)
+          alert("Pedido atualizado com sucesso!")
         }
       }).catch((e) => {
         console.log(e)
@@ -321,7 +357,6 @@ export default class NovoPedido extends React.Component {
       }).then((r)=>{
         console.log(r)
       })
-    //console.log(pedido)
   }
 
 
@@ -496,6 +531,7 @@ export default class NovoPedido extends React.Component {
                     {id:'totIte', label:'Total do Item',type:'money'}           
                   ]}
                   data={this.state.pedidoProdutos}
+                  returnLineData={this.getDataFromTable}
                 ></Table>
               </div>
             </Col>
