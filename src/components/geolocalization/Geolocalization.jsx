@@ -22,7 +22,6 @@ export default function User() {
   const [status, setStatus] = useState('')
   const [users, setUsers] = useState([])
   const [userToEdit, setUserToEdit] = useState(null)
-  const url =  require('../api').default;
 
   async function setUser(){
     if(password?.target?.value === repeatPassword?.target?.value){
@@ -59,6 +58,8 @@ export default function User() {
     
   }
 
+  
+
   const axiosConfig = {
     headers: {
       'Authorization': `bearer ${localStorage.getItem("sipToken")}`
@@ -75,7 +76,7 @@ export default function User() {
    }
 
   function sendUser(){
-    axios.post(`${url}/user`, data, axiosConfig).then((response) => {
+    axios.post('http://localhost:3001/user', data, axiosConfig).then((response) => {
         if(response.status === 201){
           alert("Usuário cadastrado com sucesso!")
           setUserToEdit(null)
@@ -87,7 +88,7 @@ export default function User() {
   
 
   function updateUser(id){
-    axios.put(`${url}/user/${id}`, data, axiosConfig).then((response) => {
+    axios.put('http://localhost:3001/user/' + id, data, axiosConfig).then((response) => {
         if(response.status === 204){
           alert("Usuário atualizado com sucesso!")
           setUserToEdit(null)
@@ -98,7 +99,7 @@ export default function User() {
   }
 
   function deleteUser(id){
-    axios.delete(`${url}/user/${id}`, axiosConfig).then((response) => {
+    axios.delete('http://localhost:3001/user/' + id, axiosConfig).then((response) => {
         if(response.status === 204){
           alert("Usuário excluído com sucesso!")
           setUserToEdit(null)
@@ -109,7 +110,7 @@ export default function User() {
   }
 
   function getusers(){
-    axios.get(`${url}/user`, {
+    axios.get('http://localhost:3001/user', {
       headers: {
         "Authorization": `bearer ${localStorage?.getItem("sipToken")}`
       }
@@ -259,14 +260,14 @@ export default function User() {
             <div className="table">
             <Table
                 keys={[
-                  {id:'id',label: 'Código', type:'number'},
-                  {id:'name',label: 'Nome', type:'string'},
-                  {id:'email',label: 'Email', type:'string'},
-                  {id:'level',label: 'Nível', type:'string'},
-                  {id:'status',label: 'Status', type:'string'},
-                  {id:'cnpj',label: 'CNPJ', type:'string'},
-                  {id:'registrationDate',label: 'Data de Criação', type:'date'},
-                  {id:'updateDate', label: 'Data de atualização', type:'date'}
+                  'id',
+                  'name',
+                  'email',
+                  'level',
+                  'status',
+                  'cnpj',
+                  'registrationDate',
+                  'updateDate'
                 ]}
                 data={users?.data}
                 returnLineData={getDataFromTable}

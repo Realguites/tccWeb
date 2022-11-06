@@ -1,0 +1,19 @@
+
+.modalPresentData{
+    display:block;
+    color: #4682B4;
+    font-size: 20px;
+}
+
+.groupStrongRevealData{
+    text-align:left;
+}
+
+.row{
+    padding-bottom: 20px;
+}
+
+.inputModalProduct{
+    text-align: center;
+    border: 1.7px solid rgb(55, 65, 109);
+}

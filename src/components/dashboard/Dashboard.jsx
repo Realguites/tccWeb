@@ -12,12 +12,14 @@ export default function Dashboard()  {
 
   const [smartphones, setSmartphones] = useState([])
 
+  const url =  require('../api').default;
+
   useEffect(() => {
     getSmartphones()
   }, [])
 
   function getSmartphones(){
-    axios.get('http://localhost:3001/smartphone', {
+    axios.get(`${url}/smartphone`, {
       headers: {
         "Authorization": `bearer ${localStorage?.getItem("sipToken")}`
       }
@@ -27,7 +29,7 @@ export default function Dashboard()  {
   }
 
   function deleteSmartphone(idDisp){
-    axios.delete('http://localhost:3001/smartphone/' + idDisp, axiosConfig).then((response) => {
+    axios.delete(`${url}/smartphone` + idDisp, axiosConfig).then((response) => {
         if(response.status === 204){
           alert(response.data)
           setSmartphones(null)
@@ -78,7 +80,12 @@ export default function Dashboard()  {
               <h2>Bem-vindo(a) <strong>{localStorage.getItem("sipUser").substring(0, localStorage.getItem("sipUser").indexOf(" ") + 1)}</strong></h2>
               <div className="button-group">
                 <Button
-                  label={"Sair"}>
+                  label={"Sair"}
+                  onClick={function(_){
+                    localStorage.setItem("sipToken", null)
+                    window.location.href= '/'
+                  }}
+                  >
                 </Button>
                 <Button
                   label={"Usuários"}
@@ -102,20 +109,20 @@ export default function Dashboard()  {
             <div className="table">
               <Table
                 keys={[
-                  'idDisp',
-                  'cnpj',
-                  'usuario',
-                  'status',
-                  'codLoj',
-                  'nomLoj',
-                  'versao',
-                  'autCgm',
-                  'nLocal',
-                  'nAndroid',
-                  'dLocal',
-                  'dAndroid',
-                  'versaoEstavel',
-                  'linkAtualizacao'
+                  {id:'idDisp',label:'Id do Dispositivo', type:'string'},
+                  {id:'cnpj',label:'CNPJ', type:'string'},
+                  {id:'usuario',label:'Usuário', type:'string'},
+                  {id:'status',label:'Status', type:'string'},
+                  {id:'codLoj',label:'Cód. loja', type:'number'},
+                  {id:'nomLoj',label:'Nome loja', type:'string'},
+                  {id:'versao',label:'Versão', type:'string'},
+                  {id:'autCgm',label:'Autorização CGM', type:'string'},
+                  {id:'nLocal',label:'Número de envios local', type:'number'},
+                  {id:'nAndroid',label:'Número de envios android', type:'number'},
+                  {id:'dLocal',label:'Data último envio local', type:'date'},
+                  {id:'dAndroid',label:'Data último envio android', type:'date'},
+                  {id:'versaoEstavel',label:'Versão Estável', type:'string'},
+                  {id:'linkAtualizacao',label:'Link de atualização', type:'string'}
                 ]}
                 data={smartphones}
                 returnLineData={getDataFromTable}

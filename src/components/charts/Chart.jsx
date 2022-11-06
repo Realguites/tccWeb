@@ -7,13 +7,14 @@ import Button from '../button/Button'
 import { Chart } from "react-google-charts";
 import { useState, useEffect } from 'react';
 
-
 export default function User() {
+
+ const url =  require('../api').default;
 
   const [data, setData] = useState([])
 
   function getData() {
-    axios.get('http://localhost:3001/smartphone', {
+    axios.get(`${url}/smartphone`, {
       headers: {
         "Authorization": `bearer ${localStorage?.getItem("sipToken")}`
       }

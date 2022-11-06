@@ -1,32 +1,52 @@
 import './login.css'
 import Input from '../input/Input'
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import 'react-notifications/lib/notifications.css';
-import { NotificationManager } from 'react-notifications';
-import NotificationAlert from "../notificationAlert/NotificationAlert";
+import { isExpired, decodeToken } from "react-jwt";
 
 
 export default props => {
 
   const [usuario, setUsuario] = useState('')
   const [password, setPassword] = useState('')
+  const url =  require('../api');
+  useEffect(() => {
+    const isMyTokenExpired = isExpired(localStorage.getItem("sipToken"));
+    if(!isMyTokenExpired){
+      const userData = decodeToken(localStorage.getItem("sipToken"));
+      redirectUser(userData.user.level)
+    }
 
-  async function login() {
-    axios
-      .post('http://localhost:3001/login', {
-        email: usuario,
-        password: password
-      }).then((response) => {
-        if(response.status === 200){
-          localStorage.setItem("sipToken", response.data.token);
-          localStorage.setItem("sipUser", response.data.user.name);
-          alert(response.data.user.name + ", Bem-vindo!")
-          window.location.href = "/dashboard";
-        }
-      }).catch((e) => {
-        alert(e.response.data.erro)
-      })
+  }, [])
+  const login = () => {
+    axios.post(url.default + '/login', {
+      email: usuario,
+      password: password
+    }).then((response) => {
+      if (response.status === 200) {
+        localStorage.setItem("sipToken", response.data.token);
+        //localStorage.setItem("sipUser", response.data.user.name);
+        //localStorage.setItem("sipCnpj", response.data.user.cnpj);
+        alert(response.data.user.name + ", Bem-vindo!")
+        const userData = decodeToken(response.data.token);
+        redirectUser(userData.user.level)
+      }
+    }).catch((e) => {
+      alert(e.response.data.erro)
+    })
+  }
+
+  const redirectUser = (level) =>{
+    if(
+      level === 'A' ||
+      level === 'B' ||
+      level === 'C' ||
+      level === 'D'
+    )
+      window.location.href = "/dashboard";
+    else
+      window.location.href = "/pedidos";
   }
 
   return (
