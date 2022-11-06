@@ -21,7 +21,8 @@ const toDefaultMoneyMask = (value) => {
   }
 
 function setStatus(h, idDisp, data) {
-    axios.put('http://localhost:3001/smartphone/' + idDisp, JSON.parse('{"' + h.id + '":"' + data + '"}'), axiosConfig).then((response) => {
+    const url =  require('../api').default;
+    axios.put(`${url}/smartphone/${idDisp}`, JSON.parse('{"' + h.id + '":"' + data + '"}'), axiosConfig).then((response) => {
         if (response.status === 204) {
             alert("Usuário atualizado com sucesso!")
         }

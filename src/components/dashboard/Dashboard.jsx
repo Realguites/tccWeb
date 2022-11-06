@@ -12,12 +12,14 @@ export default function Dashboard()  {
 
   const [smartphones, setSmartphones] = useState([])
 
+  const url =  require('../api').default;
+
   useEffect(() => {
     getSmartphones()
   }, [])
 
   function getSmartphones(){
-    axios.get('http://localhost:3001/smartphone', {
+    axios.get(`${url}/smartphone`, {
       headers: {
         "Authorization": `bearer ${localStorage?.getItem("sipToken")}`
       }
@@ -27,7 +29,7 @@ export default function Dashboard()  {
   }
 
   function deleteSmartphone(idDisp){
-    axios.delete('http://localhost:3001/smartphone/' + idDisp, axiosConfig).then((response) => {
+    axios.delete(`${url}/smartphone` + idDisp, axiosConfig).then((response) => {
         if(response.status === 204){
           alert(response.data)
           setSmartphones(null)

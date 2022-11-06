@@ -17,7 +17,6 @@ export default class NovoPedido extends React.Component {
   constructor(props) {
     
     super(props);
-    console.log(window.location.href)
     this.state = {
       pesquisaCliente: "",
       pesquisaModalidade: "",
@@ -93,7 +92,8 @@ export default class NovoPedido extends React.Component {
   }
 
   searchPedido = (codPed) =>{
-    axios.get(`http://localhost:3001/pedido/${this.state?.userData?.cnpj}/${codPed}`, {
+    const url =  require('../api').default;
+    axios.get(`${url}/pedido/${this.state?.userData?.cnpj}/${codPed}`, {
       headers: {
         "Authorization": `bearer ${localStorage.getItem("sipToken")}`
       }
@@ -228,10 +228,11 @@ export default class NovoPedido extends React.Component {
   }
 
   getClientes = (codCli) => {
+    const url =  require('../api').default;
     if (codCli == null)
       codCli = Number(this.state.pesquisaCliente)
     if (!isNaN(codCli)) {
-      axios.get(`http://localhost:3001/cliente/${localStorage.getItem("sipCnpj")}/code/${codCli}`, {
+      axios.get(`${url}/cliente/${localStorage.getItem("sipCnpj")}/code/${codCli}`, {
         headers: {
           "Authorization": `bearer ${localStorage.getItem("sipToken")}`
         }
@@ -247,7 +248,7 @@ export default class NovoPedido extends React.Component {
           alert('Nenhum cliente encontrado com o código ' + codCli)  
       })
     } else {
-      axios.get(`http://localhost:3001/cliente/${localStorage.getItem("sipCnpj")}/name/${this.state.pesquisaCliente}`, {
+      axios.get(`${url}/cliente/${localStorage.getItem("sipCnpj")}/name/${this.state.pesquisaCliente}`, {
         headers: {
           "Authorization": `bearer ${localStorage.getItem("sipToken")}`
         }
@@ -271,7 +272,8 @@ export default class NovoPedido extends React.Component {
 
 
   getModalidades = () => {
-    axios.get(`http://localhost:3001/modalidade/${localStorage.getItem("sipCnpj")}`, {
+    const url =  require('../api').default;
+    axios.get(`${url}/modalidade/${localStorage.getItem("sipCnpj")}`, {
       headers: {
         "Authorization": `bearer ${localStorage.getItem("sipToken")}`
       }
@@ -299,6 +301,7 @@ export default class NovoPedido extends React.Component {
 
 
   gravarPedido = () =>{
+    const url =  require('../api').default;
     if(this.state.codCienteInserido === 0){
       alert('Cliente não inserido ou inválido!')
       return
@@ -336,7 +339,7 @@ export default class NovoPedido extends React.Component {
       'produtosPedido': this.state.pedidoProdutos
     }
     if(this.state.codPedUpdate === 0)
-      axios.post(`http://localhost:3001/pedido`, pedido, axiosConfig).then((response) => {
+      axios.post(`${url}/pedido`, pedido, axiosConfig).then((response) => {
           if(response.status === 201){
             alert("Pedido inserido com sucesso!")
           }
@@ -348,7 +351,7 @@ export default class NovoPedido extends React.Component {
         console.log(r)
       })
     else
-      axios.put(`http://localhost:3001/pedido/${this.state.codPedUpdate}`, pedido, axiosConfig).then((response) => {
+      axios.put(`${url}/pedido/${this.state.codPedUpdate}`, pedido, axiosConfig).then((response) => {
         if(response.status === 201){
           alert("Pedido atualizado com sucesso!")
         }
@@ -363,10 +366,11 @@ export default class NovoPedido extends React.Component {
 
 
   getProdutos = (codPro) => {
+    const url =  require('../api').default;
     if (codPro == null)
       codPro = Number(this.state.pesquisaProduto)
     if (!isNaN(codPro)) {
-      axios.get(`http://localhost:3001/produto/${localStorage.getItem("sipCnpj")}/code/${codPro}`, {
+      axios.get(`${url}/produto/${localStorage.getItem("sipCnpj")}/code/${codPro}`, {
         headers: {
           "Authorization": `bearer ${localStorage.getItem("sipToken")}`
         }
@@ -382,7 +386,7 @@ export default class NovoPedido extends React.Component {
           alert('Nenhum produto encontrado com o código ' + codPro)
       })
     } else {
-      axios.get(`http://localhost:3001/produto/${localStorage.getItem("sipCnpj")}/name/${this.state.pesquisaProduto}`, {
+      axios.get(`${url}/produto/${localStorage.getItem("sipCnpj")}/name/${this.state.pesquisaProduto}`, {
         headers: {
           "Authorization": `bearer ${localStorage.getItem("sipToken")}`
         }

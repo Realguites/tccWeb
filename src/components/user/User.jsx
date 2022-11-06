@@ -22,6 +22,7 @@ export default function User() {
   const [status, setStatus] = useState('')
   const [users, setUsers] = useState([])
   const [userToEdit, setUserToEdit] = useState(null)
+  const url =  require('../api').default;
 
   async function setUser(){
     if(password?.target?.value === repeatPassword?.target?.value){
@@ -74,7 +75,7 @@ export default function User() {
    }
 
   function sendUser(){
-    axios.post('http://localhost:3001/user', data, axiosConfig).then((response) => {
+    axios.post(`${url}/user`, data, axiosConfig).then((response) => {
         if(response.status === 201){
           alert("Usuário cadastrado com sucesso!")
           setUserToEdit(null)
@@ -86,7 +87,7 @@ export default function User() {
   
 
   function updateUser(id){
-    axios.put('http://localhost:3001/user/' + id, data, axiosConfig).then((response) => {
+    axios.put(`${url}/user/${id}`, data, axiosConfig).then((response) => {
         if(response.status === 204){
           alert("Usuário atualizado com sucesso!")
           setUserToEdit(null)
@@ -97,7 +98,7 @@ export default function User() {
   }
 
   function deleteUser(id){
-    axios.delete('http://localhost:3001/user/' + id, axiosConfig).then((response) => {
+    axios.delete(`${url}/user/${id}`, axiosConfig).then((response) => {
         if(response.status === 204){
           alert("Usuário excluído com sucesso!")
           setUserToEdit(null)
@@ -108,7 +109,7 @@ export default function User() {
   }
 
   function getusers(){
-    axios.get('http://localhost:3001/user', {
+    axios.get(`${url}/user`, {
       headers: {
         "Authorization": `bearer ${localStorage?.getItem("sipToken")}`
       }

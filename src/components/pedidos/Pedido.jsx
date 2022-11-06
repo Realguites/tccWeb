@@ -18,7 +18,8 @@ export default class Pedido extends React.Component {
   }
 
   componentDidMount() {
-    axios.get(`http://localhost:3001/pedido/${this.state.userData?.cnpj}`, {
+    const url =  require('../api').default;
+    axios.get(`${url}/pedido/${this.state.userData?.cnpj}`, {
       headers: {
         "Authorization": `bearer ${localStorage.getItem("sipToken")}`
       }
@@ -29,7 +30,8 @@ export default class Pedido extends React.Component {
   }
 
   deletePedido = (id) => {
-    axios.delete('http://localhost:3001/pedido/' + this.userData?.cnpj + '/' + id, {
+    const url =  require('../api').default;
+    axios.delete(`${url}/pedido/${this.userData?.cnpj}/${id}`, {
       headers: {
         "Authorization": `bearer ${localStorage.getItem("sipToken")}`
       }
@@ -44,7 +46,6 @@ export default class Pedido extends React.Component {
 
   
   getDataFromTable = (condition, data) => {
-    console.log('tesssteeeeeee ' , data)
     if(condition === 'delete'){
       if(window.confirm(`Tem certeza que deseja excluir o pedido ${data?.id}? Isso é irreversível!`)){
         this.deletePedido(data?.id) 

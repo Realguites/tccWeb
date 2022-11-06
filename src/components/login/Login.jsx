@@ -10,7 +10,7 @@ export default props => {
 
   const [usuario, setUsuario] = useState('')
   const [password, setPassword] = useState('')
-
+  const url =  require('../api');
   useEffect(() => {
     const isMyTokenExpired = isExpired(localStorage.getItem("sipToken"));
     if(!isMyTokenExpired){
@@ -20,7 +20,7 @@ export default props => {
 
   }, [])
   const login = () => {
-    axios.post('http://localhost:3001/login', {
+    axios.post(url.default + '/login', {
       email: usuario,
       password: password
     }).then((response) => {
