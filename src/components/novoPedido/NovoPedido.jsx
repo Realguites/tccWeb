@@ -437,7 +437,7 @@ export default class NovoPedido extends React.Component {
             </Col>
             <Col sm={4}>
               <div className="cardNovoPedido">
-              <h2>Bem-vindo(a) <strong>{userData?.name?.substring(0, userData?.name?.indexOf(" ") + 1)}</strong></h2>
+              <h2>Bem-vindo(a) <strong>{this.state.userData?.name?.substring(0, this.state.userData?.name?.indexOf(" ") + 1)}</strong></h2>
                 <h5>{this.state.nomeClienteInserido != null ? <strong>Cliente selecionado: <strong className="nomeCliente">{this.state.nomeClienteInserido}</strong></strong> : ''}</h5>
                 <h5>{this.state.nomeModalidade != null ?<strong>Modalidade: <strong className="nomeModalidade"> {this.state.nomeModalidade}</strong></strong> : ''}</h5>
               </div>
