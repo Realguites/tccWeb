@@ -179,7 +179,7 @@ export default class NovoPedido extends React.Component {
       'vlrUni': Number(this.state.produtoASerInserido.quantidade.prcVen.toFixed(2)),
       'perDes': Number(desPro),
       'vlrDes': Number(vlrDes.toFixed(2)),
-      'cnpj': localStorage.getItem("sipCnpj"),
+      'cnpj': this.state.userData?.cnpj,
       'desPro': this.state.produtoASerInserido.desPro,
       'vlrLiq': Number(vlrLiq.toFixed(2)),
       'totIte': Number((Number(qtdPed) * vlrLiq).toFixed(2)),
@@ -232,7 +232,7 @@ export default class NovoPedido extends React.Component {
     if (codCli == null)
       codCli = Number(this.state.pesquisaCliente)
     if (!isNaN(codCli)) {
-      axios.get(`${url}/cliente/${localStorage.getItem("sipCnpj")}/code/${codCli}`, {
+      axios.get(`${url}/cliente/${this.state.userData?.cnpj}/code/${codCli}`, {
         headers: {
           "Authorization": `bearer ${localStorage.getItem("sipToken")}`
         }
@@ -248,7 +248,7 @@ export default class NovoPedido extends React.Component {
           alert('Nenhum cliente encontrado com o código ' + codCli)  
       })
     } else {
-      axios.get(`${url}/cliente/${localStorage.getItem("sipCnpj")}/name/${this.state.pesquisaCliente}`, {
+      axios.get(`${url}/cliente/${this.state.userData?.cnpj}/name/${this.state.pesquisaCliente}`, {
         headers: {
           "Authorization": `bearer ${localStorage.getItem("sipToken")}`
         }
@@ -273,7 +273,7 @@ export default class NovoPedido extends React.Component {
 
   getModalidades = () => {
     const url =  require('../api').default;
-    axios.get(`${url}/modalidade/${localStorage.getItem("sipCnpj")}`, {
+    axios.get(`${url}/modalidade/${this.state.userData?.cnpj}`, {
       headers: {
         "Authorization": `bearer ${localStorage.getItem("sipToken")}`
       }
@@ -370,7 +370,7 @@ export default class NovoPedido extends React.Component {
     if (codPro == null)
       codPro = Number(this.state.pesquisaProduto)
     if (!isNaN(codPro)) {
-      axios.get(`${url}/produto/${localStorage.getItem("sipCnpj")}/code/${codPro}`, {
+      axios.get(`${url}/produto/${this.state.userData?.cnpj}/code/${codPro}`, {
         headers: {
           "Authorization": `bearer ${localStorage.getItem("sipToken")}`
         }
@@ -386,7 +386,7 @@ export default class NovoPedido extends React.Component {
           alert('Nenhum produto encontrado com o código ' + codPro)
       })
     } else {
-      axios.get(`${url}/produto/${localStorage.getItem("sipCnpj")}/name/${this.state.pesquisaProduto}`, {
+      axios.get(`${url}/produto/${this.state.userData?.cnpj}/name/${this.state.pesquisaProduto}`, {
         headers: {
           "Authorization": `bearer ${localStorage.getItem("sipToken")}`
         }
