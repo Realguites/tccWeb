@@ -14,7 +14,6 @@ export default class Pedido extends React.Component {
   state = {
     userData: decodeToken(localStorage.getItem("sipToken"))?.user,
     pedidos: []
-    //usuarioNome: localStorage.getItem("sipUser").substring(0, localStorage.getItem("sipUser").indexOf(" ") + 1)
   }
 
   componentDidMount() {

@@ -3,6 +3,7 @@ import { Container, Row, Col } from 'react-grid-system';
 import Button from '../button/Button'
 import Table from '../table/Table';
 import { useState, useEffect } from 'react';
+import { isExpired, decodeToken } from "react-jwt";
 import './Dashboard.css'
 import axios from 'axios';
 import React from 'react';
@@ -11,6 +12,7 @@ import React from 'react';
 export default function Dashboard()  {
 
   const [smartphones, setSmartphones] = useState([])
+  const user = decodeToken(localStorage.getItem("sipToken"))?.user;
 
   const url =  require('../api').default;
 
@@ -77,7 +79,7 @@ export default function Dashboard()  {
           </Col>
           <Col sm={4}>
             <div className="cardDashboard">
-              <h2>Bem-vindo(a) <strong>{localStorage.getItem("sipUser").substring(0, localStorage.getItem("sipUser").indexOf(" ") + 1)}</strong></h2>
+              <h2>Bem-vindo(a) <strong>{user?.name?.substring(0, user?.name?.indexOf(" ") + 1)}</strong></h2>
               <div className="button-group">
                 <Button
                   label={"Sair"}

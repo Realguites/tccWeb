@@ -437,7 +437,7 @@ export default class NovoPedido extends React.Component {
             </Col>
             <Col sm={4}>
               <div className="cardNovoPedido">
-                <h2>Bem-vindo(a) <strong>{localStorage.getItem("sipUser").substring(0, localStorage.getItem("sipUser").indexOf(" ") + 1)}</strong></h2><a href="" onClick="alert('batata)'">Sair</a>
+              <h2>Bem-vindo(a) <strong>{userData?.name?.substring(0, userData?.name?.indexOf(" ") + 1)}</strong></h2>
                 <h5>{this.state.nomeClienteInserido != null ? <strong>Cliente selecionado: <strong className="nomeCliente">{this.state.nomeClienteInserido}</strong></strong> : ''}</h5>
                 <h5>{this.state.nomeModalidade != null ?<strong>Modalidade: <strong className="nomeModalidade"> {this.state.nomeModalidade}</strong></strong> : ''}</h5>
               </div>

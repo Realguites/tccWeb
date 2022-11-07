@@ -6,11 +6,12 @@ import React from 'react';
 import Button from '../button/Button'
 import { Chart } from "react-google-charts";
 import { useState, useEffect } from 'react';
+import { isExpired, decodeToken } from "react-jwt";
 
 export default function User() {
 
  const url =  require('../api').default;
-
+ const user = decodeToken(localStorage.getItem("sipToken"))?.user;
   const [data, setData] = useState([])
 
   function getData() {
@@ -93,7 +94,7 @@ export default function User() {
         </Col>
         <Col sm={4}>
           <div className="cardDashboard">
-            <h2>Bem-vindo(a) <strong>{localStorage.getItem("sipUser").substring(0, localStorage.getItem("sipUser").indexOf(" ") + 1)}</strong></h2>
+          <h2>Bem-vindo(a) <strong>{user?.name?.substring(0, user?.name?.indexOf(" ") + 1)}</strong></h2>
             <div className="button-group">
               <Button
                 label={"Sair"}>

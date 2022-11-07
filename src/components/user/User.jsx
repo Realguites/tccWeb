@@ -5,6 +5,7 @@ import Button from '../button/Button'
 import Table from '../table/Table';
 import { useState, useEffect } from 'react';
 import './User.css'
+import { isExpired, decodeToken } from "react-jwt";
 import Input from '../input/Input'
 import axios from 'axios';
 import React from 'react';
@@ -23,6 +24,7 @@ export default function User() {
   const [users, setUsers] = useState([])
   const [userToEdit, setUserToEdit] = useState(null)
   const url =  require('../api').default;
+  const user = decodeToken(localStorage.getItem("sipToken"))?.user;
 
   async function setUser(){
     if(password?.target?.value === repeatPassword?.target?.value){
@@ -140,8 +142,7 @@ export default function User() {
 
         <Col sm={4}>
           <div className="cardDashboard">
-            <h2>Bem-vindo(a) <strong>{localStorage.getItem("sipUser").substring(0, localStorage.getItem("sipUser").indexOf(" ") + 1)}</strong></h2>
-            <div className="button-group">
+          <h2>Bem-vindo(a) <strong>{user?.name?.substring(0, user?.name?.indexOf(" ") + 1)}</strong></h2>            <div className="button-group">
               <Button
                 label={"Sair"}>
               </Button>
